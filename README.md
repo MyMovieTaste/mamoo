@@ -1,8 +1,8 @@
 ### Git Commit Message Convention
 
 ```
-Upload : 파일제목_업로드
-Update : 업데이트날짜(0801)_파일제목 
+Upload : 파일제목
+Update : 파일제목 
 Revise : 수정한 내용_설명
 Delete : 삭제한 파일_설명
 ```
