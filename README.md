@@ -1,3 +1,13 @@
+# API route
+
+- 영화리스트  [GET]   http://127.0.0.1:8000/movies/top_rated/
+- 영화 상세정보  [GET]  http://127.0.0.1:8000/movies/100/
+- 회원가입  [POST]   http://127.0.0.1:8000/accounts/signup/
+
+
+
+
+
 ### Git Commit Message Convention
 
 ```
