@@ -1,20 +1,31 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Movie, Genre, Review, Comment
-from .serializers import MovieListSerializer, MovieDetailSerializer, GenreRecommendListSerializer, GenreListSerializer
-from django.shortcuts import get_object_or_404, get_list_or_404, render
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import permission_classes
-import requests
-import random
-from .serializers import ReviewSerializer, CommentSerializer
-
+from .models import Movie, Genre, Review
+from .serializers import MovieListSerializer, MovieSerializer, RecommendMovieSerializer, GenreListSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
+from django.shortcuts import get_object_or_404, get_list_or_404, render
 
 # 영화 리스트
 @api_view(['GET'])
 @permission_classes([AllowAny]) # 테스트 시에만 사용
-def top_rated_movie_list(request):
+def movie_list(request):
+    movies = get_list_or_404(Movie)
+    serializer = MovieListSerializer(movies, many=True)
+    return Response(serializer.data)
+
+# 최신 개봉일 순 > 장르별 (장르별 최신 개봉영화)
+@api_view(['GET'])
+@permission_classes([AllowAny]) 
+def recent_movie_by_genre_list(request):
+    genres = Genre.objects.all()
+    serializer = RecentMovieByGenreListSerializer(genres, many=True)
+    return Response(serializer.data)
+
+# 평균 별점 높은 순 > 연도별 (연도별 평균 별점 순위)
+@api_view(['GET'])
+@permission_classes([AllowAny]) 
+def movie_list(request):
     movies = get_list_or_404(Movie)
     serializer = MovieListSerializer(movies, many=True)
     return Response(serializer.data)
@@ -22,30 +33,45 @@ def top_rated_movie_list(request):
 # 영화 상세정보
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_details(request, pk):
-    movie = get_object_or_404(Movie, pk=pk)
-    serializers = MovieDetailSerializer(movie)
+def get_details(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    serializers = MovieSerializer(movie)
     return Response(serializers.data)
 
-# 장르 추천
+# 영화 추천
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def genre_recommend(request):
-    genrelist = list(Genre.objects.all())
-    recommend_list = []
-    for genre in genrelist:
-        genre_movies = genre.movie_genre.all() # 장르별 영화들
-        if genre_movies:
-            movie = random.choice(genre_movies)
-            if movie not in recommend_list:
-                recommend_list.append((genre, movie))
-    recommend_list = random.sample(set(recommend_list), 10)
-    # context = {
-    # 'recommend_list': recommend_list,
-    # }   
-    # return render(request, 'movies/recommend.html', context)
-    serializers = GenreRecommendListSerializer(recommend_list, many=True)
+def movie_recommend(request):
+    user_reviews = Review.objects.all().filter(user=request.user)
+    review_gte4 = user_reviews.filter(rank__gte=4)
+    review_gte4_count = user_reviews.filter(rank__gte=4).count()
+    if review_gte4_count >= 5:
+	    return movie_recommend2(request, review_gte4)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def movie_recommend2(request,review_gte4):
+    movie_list_gte4 = []
+    for review in review_gte4:
+        movie_list_gte4.append(review.movie) 
+
+    reviews = Review.objects.all().exclude(user=request.user)
+    same_taste_users = []
+    for movie in movie_list_gte4:
+        for review in reviews:
+            if review.movie == movie:
+                same_taste_users.append(review.user)
+    
+    recommend_movies = []
+    for same_taste_user in same_taste_users:
+        recommend_movie = reviews.filter(user=same_taste_user)
+        if recommend_movie not in movie_list_gte4:
+            recommend_movies.append()
+    
+    serializers = RecommendMovieSerializer(recommend_movies, many=True)
     return Response(serializers.data)
+
+
 
 # 장르 리스트
 @api_view(['GET'])
@@ -56,60 +82,77 @@ def genre_list(request):
     return Response(serializers.data)
 
 
- # 리뷰: 보기 쓰기 업데이트 삭제
-    path('reviews/', views.review_list_or_create), # get, post
-    path('reviews/<int:review_pk>/', views.review_detail_or_update_or_delete), # get, post, put, delete
-
-    # 리뷰 댓글: 보기 쓰기 삭제
-    path('reviews/<int:review_pk>/comments/', views.comment_list_or_create), # get, post
-    path('reviews/<int:review_pk>/comments/<int:comment_pk>/', views.review_detail_or_delete) # get, post, put, delete
-
-# 리뷰리스트 및 리뷰 작성
-@api_view(['GET', 'POST'])
+# 리뷰리스트 및 리뷰작성(특정 영화의)
+@api_view(['GET', 'POST' , 'PUT', 'DELETE'])
 @permission_classes([AllowAny])
-def review_list_or_create(request):
+def review_list_or_create(request, movie_pk):
+
     if request.method == 'GET':
-        reviews = get_list_or_404(Review)
-        serializers = ReviewSerializer(reviews, many=True)
-        return Response(serializers.data)
+        reviews = Review.objects.all()
+        movie_reviews = reviews.filter(movie=movie_pk).order_by("created_at")
+        serializer = ReviewSerializer(movie_reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method =='POST':
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+            serializer.save(movie=movie, user=user)
+            print(movie)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-# 개별 리뷰 보기 수정 삭제
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([AllowAny])
-def review_detail_or_update_or_delete(request, pk):
-    review = get_list_or_404(Review, pk=pk)
-    if request.method == 'GET':
-        serializer = ReviewSerializer(review)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = ReviewSerializer(review, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+    # elif request.method == 'PUT':
+    #     movie = get_object_or_404(Movie, pk=movie_pk)
+    #     serializer = ReviewSerializer(movie, data=request.data)
+    #     if serializer.is_valid(raise_exception=True):
+    #         serializer.save(movie=movie)
+    #         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
-    elif request.method == 'DELETE':
-        review.delete()
-        data = {
-            'message' : 'deleted',
-        }
-        return Response(data)
+    # elif request.method == 'DELETE':
+    #     movie.review.delete()
+    #     data = {
+    #         'message' : 'deleted',
+    #     }
+    #     return Response(data, status=status.HTTP_204_NO_CONTENT)   
 
+
+# # 댓글리스트 및 댓글작성
+# @api_view(['GET', 'POST'])
+# @permission_classes([AllowAny])
+# def comment_list_or_create(request, review_pk):
+
+#     if request.method == 'GET':
+#         comments = get_object_or_404(Comment)
+#         serializer = CommentSerializer(comments, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     elif request.method =='POST':
+#         review = get_object_or_404(Review, pk=review_pk)
+#         serializer = CommentSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save(review=review)
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# # 개별 댓글 보기 수정 삭제
+# @api_view(['GET', 'PUT', 'DELETE'])
+# @permission_classes([AllowAny])
+# def comment_detail_or_update_or_delete(request, review_pk):
+#     review = get_object_or_404(Comment, pk=review_pk)
+#     if request.method == 'GET':
+#         serializer = CommentSerializer(review)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     elif request.method == 'PUT':
+#         serializer = CommentSerializer(review, data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save(review=review)
+#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
-# 댓글 작성하기
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
-def comment_list_or_create(request):
-    reviews = get_list_or_404(Review)
-    serializers = ReviewSerializer(reviews, many=True)
-    return Response(serializers.data)
-
-
-
+#     elif request.method == 'DELETE':
+#         review.comment.delete()
+#         data = {
+#             'message' : 'deleted',
+#         }
+#         return Response(data, status=status.HTTP_204_NO_CONTENT)
