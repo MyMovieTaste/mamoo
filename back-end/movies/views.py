@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from .models import Movie, Genre, Review
 from .serializers import MovieListSerializer, MovieSerializer, RecommendMovieSerializer, GenreListSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
 from django.shortcuts import get_object_or_404, get_list_or_404, render
+from collections import Counter
 
 # 영화 리스트
 @api_view(['GET'])
@@ -45,32 +46,88 @@ def movie_recommend(request):
     user_reviews = Review.objects.all().filter(user=request.user)
     review_gte4 = user_reviews.filter(rank__gte=4)
     review_gte4_count = user_reviews.filter(rank__gte=4).count()
+
     if review_gte4_count >= 5:
-	    return movie_recommend2(request, review_gte4)
+        movie_list_gte4 = []
+        for review in review_gte4:
+            movie_list_gte4.append(review.movie) 
+
+        reviews = Review.objects.all().exclude(user=request.user)
+        same_taste_users = []
+        for movie in movie_list_gte4:
+            for review in reviews:
+                if review.movie == movie:
+                    same_taste_users.append(review.user)
+        
+        recommend_movies = []
+        for same_taste_user in same_taste_users:
+            recommend_movie = reviews.filter(user=same_taste_user).values('movie_ids')
+            if recommend_movie not in movie_list_gte4:
+                recommend_movies.append(recommend_movie)
+        recommend_movies_no_overlap = list(set(recommend_movies)) # 중복제거
+        
+        serializers = RecommendMovieSerializer(recommend_movies_no_overlap, many=True)
+        return Response(serializers.data)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def movie_recommend2(request,review_gte4):
-    movie_list_gte4 = []
-    for review in review_gte4:
-        movie_list_gte4.append(review.movie) 
+def movie_recommend_genre(request):
+    # 장르 제외한 추천과 동일한 부분
+    user_reviews = Review.objects.all().filter(user=request.user)
+    review_gte4 = user_reviews.filter(rank__gte=4)
+    review_gte4_count = user_reviews.filter(rank__gte=4).count()
 
-    reviews = Review.objects.all().exclude(user=request.user)
-    same_taste_users = []
-    for movie in movie_list_gte4:
-        for review in reviews:
-            if review.movie == movie:
-                same_taste_users.append(review.user)
-    
-    recommend_movies = []
-    for same_taste_user in same_taste_users:
-        recommend_movie = reviews.filter(user=same_taste_user)
-        if recommend_movie not in movie_list_gte4:
-            recommend_movies.append()
-    
-    serializers = RecommendMovieSerializer(recommend_movies, many=True)
+    if review_gte4_count >= 5:
+        movie_list_gte4 = []
+        for review in review_gte4:
+            movie_list_gte4.append(review.movie) 
+
+        reviews = Review.objects.all().exclude(user=request.user)
+        same_taste_users = []
+        for movie in movie_list_gte4:
+            for review in reviews:
+                if review.movie == movie:
+                    same_taste_users.append(review.user)
+        
+        recommend_movies = []
+        for same_taste_user in same_taste_users:
+            recommend_movie = reviews.filter(user=same_taste_user).values('movie_ids')
+            if recommend_movie not in movie_list_gte4:
+                recommend_movies.append(recommend_movie)
+
+    #장르추가########################################################
+
+    genres_movie_list_gte4 = [] # [12, 28, 878]
+    for movie_id in movie_list_gte4:
+        movie = Movie.objects.all().filter(id=movie_id)
+        genre_ids = movie.values('genre_ids')
+        # <QuerySet [{'genre_ids': 12}, {'genre_ids': 28}, {'genre_ids': 878}]>
+        for genre_id in genre_ids:
+                genres_movie_list_gte4.append(genre_id['genre_ids'])
+
+    genre_ratio_movie_list_gte4 = dict(Counter(genres_movie_list_gte4)) # {12: 1, 28: 1, 878:1}
+
+    result = []
+    for genre_id, cnt in genre_ratio_movie_list_gte4.items(): # 12,1  28,1  878,1
+        c = 0
+        for i in range(len(recommend_movies)):
+            movie = Movie.objects.get(id=recommend_movies[i])
+            if genre_id in movie.genre_ids:
+                result.append(movie)
+                recommend_movies.pop(i)
+                c += 1
+                if c == cnt:
+                    break
+            else:
+                # 동일 장르이면서 평점(vote_average)가 높은 영화
+                alt = Movie.objects.filter(genre_ids__contains=genre_id).order_by('-vote_average')
+                result.append(alt)
+                c += 1
+                if c == cnt:
+                    break
+
+    serializers = RecommendMovieSerializer(result, many=True)
     return Response(serializers.data)
-
 
 
 # 장르 리스트
@@ -99,7 +156,6 @@ def review_list_or_create(request, movie_pk):
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(movie=movie, user=user)
-            print(movie)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # elif request.method == 'PUT':

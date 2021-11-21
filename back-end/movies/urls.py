@@ -12,6 +12,7 @@ urlpatterns = [
     path('genre_list/', views.genre_list), 
     # 영화 추천
     path('movie_recommend/', views.movie_recommend), 
+    path('movie_recommend_genre/', views.movie_recommend_genre), 
     # 리뷰: 보기 쓰기 업데이트 삭제
     path('<int:movie_pk>/reviews/', views.review_list_or_create), # get, post
     # path('<int:movie_pk>/reviews/<int:review_pk>/', views.review_detail_or_update_or_delete), # get, put, delete
