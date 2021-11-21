@@ -4,6 +4,8 @@ from django.conf import settings
 
 # Create your models here.
 
+class Year(models.Model):
+    id = models.CharField(primary_key=True, max_length=4)
 
 class Bookmark(models.Model):
     pass
@@ -20,9 +22,11 @@ class Movie(models.Model):
     popularity = models.FloatField()
     vote_count = models.IntegerField()
     vote_average = models.FloatField()
-    release_date = DateTimeField()
+    release_date = models.DateField()
     poster_path = models.CharField(max_length=200)
     ranking = models.IntegerField()
+    # 1:N
+    year = models.ForeignKey(Year, on_delete=models.CASCADE, blank=True)
     # M:N
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')
     # 이 영화를 북마크 한 사람

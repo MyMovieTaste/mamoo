@@ -2,10 +2,32 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from .models import Movie, Genre, Review
-from .serializers import MovieListSerializer, MovieSerializer, RecommendMovieSerializer, GenreListSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
-from django.shortcuts import get_object_or_404, get_list_or_404, render
+from .models import Movie, Genre, Review, Year
+from .serializers import MovieSearchSerializer, MovieListSerializer, MovieSerializer, BestVoteMovieByYearListSerializer, RecommendMovieSerializer, GenreListSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
+from django.shortcuts import get_object_or_404, get_list_or_404
 from collections import Counter
+from itertools import islice
+
+# 연도테이블생성
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def create_year_table(request):
+    batch_size = 10
+    objs = (Year(id=year) for year in range(1950, 2022))
+    while True:
+        batch = list(islice(objs, batch_size))
+        if not batch:
+            break
+        Year.objects.bulk_create(batch, batch_size)
+
+# 검색기능 - 영화 제목으로 검색 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def search(request):
+    keyword = request.data['keyword']
+    result = Movie.objects.filter(title__contains=keyword)
+    serializer = MovieSearchSerializer(result, many=True)
+    return Response(serializer.data)
 
 # 영화 리스트
 @api_view(['GET'])
@@ -18,7 +40,7 @@ def movie_list(request):
 # 최신 개봉일 순 > 장르별 (장르별 최신 개봉영화)
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
-def recent_movie_by_genre_list(request):
+def recent_movie_by_genre(request):
     genres = Genre.objects.all()
     serializer = RecentMovieByGenreListSerializer(genres, many=True)
     return Response(serializer.data)
@@ -26,9 +48,10 @@ def recent_movie_by_genre_list(request):
 # 평균 별점 높은 순 > 연도별 (연도별 평균 별점 순위)
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
-def movie_list(request):
-    movies = get_list_or_404(Movie)
-    serializer = MovieListSerializer(movies, many=True)
+def best_vote_movie_by_year(request):
+    # years = get_list_or_404(Year) # order_by 사용불가
+    years = Year.objects.all().order_by('-id')
+    serializer = BestVoteMovieByYearListSerializer(years, many=True)
     return Response(serializer.data)
 
 # 영화 상세정보

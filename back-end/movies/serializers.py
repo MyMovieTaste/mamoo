@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Genre, Movie, Review
+from .models import Genre, Movie, Review, Year
 
 
 # class CommentSerializer(serializers.ModelSerializer):
@@ -13,57 +13,71 @@ from .models import Genre, Movie, Review
 #         model = Comment
 #         fields = '__all__'
 
+# class ReviewListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Review
+#         fields = '__all__'
+
+# 리뷰 상세
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
         read_only_fields = ('movie', 'user')
 
-# class ReviewListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Review
-#         fields = '__all__'
+# 영화검색
+class MovieSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = '__all__'
 
+# 영화 상세
 class MovieSerializer(serializers.ModelSerializer):
     review_set = ReviewSerializer(many=True, read_only=True) # 영화에 달린 모든 댓글
     class Meta:
         model = Movie
         fields = '__all__'
 
+# 영화 리스트
 class MovieListSerializer(serializers.ModelSerializer):
     review_count = serializers.IntegerField(source='review_set.count', read_only=True) # 영화에 달린 모든 리뷰수
     class Meta:
         model = Movie
         fields = '__all__'
 
-# SerializerMethodField 사용하여 필드추가
-# 해당 오브젝트(쿼리셋)에 .values()를 붙이고 리스트로 감싸자!
+# 장르별 개봉순 영화
 class RecentMovieByGenreListSerializer(serializers.ModelSerializer):
     movies_by_genre = serializers.SerializerMethodField()
 
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ['id', 'name', 'movies_by_genre']
 
     def get_movies_by_genre(self, obj):
         movies = Movie.objects.all().order_by('-release_date')
-        genre_ids = Genre.objects.all().values('id').values()
+        return movies.filter(genre_ids=obj.id).values() # 입력받은 아이디와 일치여부 확인,.values()를 붙여야
 
-        movies_by_genre = []
-        for genre_id in genre_ids: 
-            movies_by_genre.append(movies.filter(genre_ids=genre_id['id']).values())
-        
-        return movies_by_genre
+# 연도별 평균별점순 영화
+class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
+    movies_by_year = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Year
+        fields = ['id','movies_by_year']
+
+    def get_movies_by_year(self, obj):
+        movies = Movie.objects.all().order_by('-vote_average')
+        return movies.filter(year_id=obj.id).values()
+
+
+# 장르 리스트
 class GenreListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = '__all__'
 
+# 영화추천
 class RecommendMovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
-
-
-
