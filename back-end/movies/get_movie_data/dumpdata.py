@@ -20,7 +20,7 @@ tmdb_helper = TMDBHelper('a7a15875c1c12251bc2930bc181baca0')
 #   print(raw_data)
 
 # pprint(get_boxoffice_ranking())
-  
+
 
 def get_top_rated():
   result = []
@@ -43,6 +43,7 @@ def get_top_rated():
                 "release_date" : movie.get("release_date"),
                 "poster_path" : movie.get("poster_path"),                
                 "genre_ids" : movie.get("genre_ids"),
+                "year" : int(movie.get("release_date")[:4]),
                 "ranking" : ranking,
             }
         }
