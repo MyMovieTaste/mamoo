@@ -1,24 +1,39 @@
 <template>
   <div>    
     <recommend-list v-if="!isLogin"></recommend-list>
-    <my-recommend-list v-else>다른 유저들이 추천받은 영화</my-recommend-list>
+    <my-recommend-list v-else></my-recommend-list>
+    <this-year-list-by-genre></this-year-list-by-genre>
   </div>
 </template>
 
 <script>
 import RecommendList from '@/components/RecommendList.vue'
 import MyRecommendList from '@/components/MyRecommendList.vue'
+import { mapGetters } from 'vuex'
+import ThisYearListByGenre from '@/components/ThisYearListByGenre.vue'
 
 export default {
   name: 'Index',
   components: {
     RecommendList,
     MyRecommendList,
+    ThisYearListByGenre
   },
-  data: function() {
+  data: function () {
     return {
-      isLogin: false,
+    //   isLogin: this.$store.state.isLogin
     }
+  },
+  methods: {
+
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ]),
+  },
+  created: function() {
+    this.$store.dispatch('getThisYearList')
   }
 }
 </script>
