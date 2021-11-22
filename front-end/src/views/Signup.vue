@@ -5,27 +5,30 @@
     <input
       type="text"
       placeholder="username"
-      v-model="username"
+      v-focus
+      v-model="credentials.username"
     >
     <p> </p>
     <input
       type="password"
       placeholder="password"
-      v-model="password"
+      v-model="credentials.password"
     >
     <p></p>
     <input
       type="password"
       placeholder="passwordConfirmation"
-      v-model="passwordConfirmation"
+      v-model="credentials.passwordConfirmation"
+      @keyup.enter="signup"
     >
     <p></p>
-    <button @click="signup" @keyup.enter="signup" class="btn btn-primary">Next</button>
+    <button @click="signup" class="btn btn-primary">Next</button>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+
 export default {
   name: 'Signup',
   data: function () {
@@ -41,14 +44,28 @@ export default {
     signup() {
       axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/signup/',
+        url: 'http://127.0.0.1:8000/accounts/signup/',
         data: this.credentials,
       })
-        .then()
+        .then(() => {
+          this.$router.push({name: 'Login'})
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
     // toSignupReview () {
     //   this.$router.push( { name: 'SignupReview' } )
     // }
+  },
+
+  directives: {
+    focus: {
+      // 디렉티브 정의
+      inserted: function (el) {
+        el.focus()
+      }
+    }
   }
 }
 </script>

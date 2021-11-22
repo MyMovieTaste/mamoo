@@ -1,23 +1,55 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link :to="{ name: 'Index' }">Home</router-link>
-      <router-link :to="{ name: 'Signup' }">추천받기</router-link>
-      <router-link :to="{ name: 'Login' }">로그인</router-link>
+    <div>
+      <div id="nav" class="d-flex justify-content-between">
+        <router-link :to="{ name: 'Index' }">Home</router-link>
+        <div v-if="!isLogin">
+          <router-link :to="{ name: 'Signup' }">추천받기</router-link> |
+          <router-link :to="{ name: 'Login' }">로그인</router-link>
+        </div>
+        <div v-else>
+          <router-link :to="{ name: 'Profile'}">내 프로필</router-link> | 
+          <router-link to="#" @click.native="logout">로그아웃</router-link>
+        </div>
+      </div>
+      <router-view/>
 
     </div>
-    <router-view/>
   </div>
 </template>
 
 <script>
-// import { defineComponent } from '@vue/composition-api'
+import jwt_decode from 'jwt-decode'
+import { mapGetters } from 'vuex'
 
-// export default defineComponent({
-//   setup() {
-    
-//   },
-// })
+export default({
+  data: function() {
+    return {
+    //   isLogin: this.$store.isLogin
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+      this.$router.push({ name: 'Login' })
+    }
+  },
+  updated: function() {
+    if (localStorage.getItem('jwt')) {
+      const token = localStorage.getItem('jwt')
+      const decodedToken = jwt_decode(token)
+      this.$store.state.username = decodedToken.username
+      this.$store.state.isLogin = true
+    } else {
+      this.$store.state.isLogin = false
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin'
+    ])
+  },
+})
 </script>
 
 
