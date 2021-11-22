@@ -34,9 +34,9 @@ export default {
   data: function () {
     return {
       credentials: {
-        // username: null,
-        // password: null,
-        // passwordConfirmation: null,
+        username: null,
+        password: null,
+        passwordConfirmation: null,
       }
     }
   },
