@@ -34,4 +34,5 @@ urlpatterns = [
     # # (리뷰의)댓글: 보기 쓰기 삭제
     # path('/<int:movie_pk>/reviews/<int:review_pk>/comments/', views.comment_list_or_create), # get, post
     # path('/<int:movie_pk>/reviews/<int:review_pk>/comments/<int:comment_pk>/', views.comment_detail_or_update_or_delete) # get, post, put, delete
+
   ]
