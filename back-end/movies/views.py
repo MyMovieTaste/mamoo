@@ -49,6 +49,8 @@ def recent_movie_by_genre(request):
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
 def best_vote_movie_by_year(request):
+    # 연도데이터 생성
+    create_year_table(request)
     # years = get_list_or_404(Year) # order_by 사용불가
     years = Year.objects.all().order_by('-id')
     serializer = BestVoteMovieByYearListSerializer(years, many=True)
@@ -162,8 +164,21 @@ def genre_list(request):
     return Response(serializers.data)
 
 
+# 북마크
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def bookmarks(request, movie_pk):
+    user = request.user
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    # 이 영화정보가 유저의 북마크리스트 안에 없으면 추가, 있으면 삭제
+    if movie not in user.bookmarked_movies.all():
+        user.remove(movie)
+    else:
+        user.add(movie)
+
+
 # 리뷰리스트 및 리뷰작성(특정 영화의)
-@api_view(['GET', 'POST' , 'PUT', 'DELETE'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def review_list_or_create(request, movie_pk):
 
@@ -174,15 +189,25 @@ def review_list_or_create(request, movie_pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method =='POST':
-        movie = get_object_or_404(Movie, pk=movie_pk)
-        user = request.user
+        movies = Movie.objects.all()
+        movie = movies.filter(movie=movie_pk)
+        profile_user = request.user
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(movie=movie, user=user)
+            serializer.save(movie=movie, user=profile_user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+def review_detail_or_update_or_delete(request, review_pk):
+    reviews = Review.objects.all()
+    review = reviews.filter(pk=1)
+    print(review)
+    if request.method == 'GET':
+        serializer = ReviewSerializer(review)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     # elif request.method == 'PUT':
-    #     movie = get_object_or_404(Movie, pk=movie_pk)
+    #     movie = get_object_or_404(Movie, pk=review_pk)
     #     serializer = ReviewSerializer(movie, data=request.data)
     #     if serializer.is_valid(raise_exception=True):
     #         serializer.save(movie=movie)
