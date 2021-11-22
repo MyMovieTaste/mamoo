@@ -4,6 +4,8 @@ import Index from '../views/Index.vue'
 import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import SignupReview from '../views/SignupReview.vue'
+import Profile from '../views/Profile.vue'
+// import MovieDetail from '../views/MovieDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +24,16 @@ const routes = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  // {
+  //   path: '/movie-detail',
+  //   name: 'MovieDetail',
+  //   component: MovieDetail
+  // },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   },
   {
     path: '/signupreview',

@@ -1,8 +1,7 @@
 <template>
   <div class="col">
     <div class="card d-block" style="width: 18rem;"
-
-      :data-movie-id="{movie}"
+      @click="moveToDetail"
     >
       <!-- <router-link :to="{ name: 'MovieDetail' }"> -->
         <img :src="posterPath" alt="" class="card-img-top">
@@ -11,28 +10,20 @@
           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <movie-detail :movieId="movie.id"></movie-detail>
-          </li>
+          <li class="list-group-item">An item</li>
         </ul>
         <!-- <div class="card-body"> -->
           <!-- <a href="#" class="card-link">Another link</a> -->
         <!-- </div> -->
       <!-- </router-link>   -->
     </div>
-
   </div>
 
 </template>
 
 <script>
-import MovieDetail from '@/components/MovieDetail.vue'
-
 export default {
   name: 'ThisYearListItem',
-  components: {
-    MovieDetail,
-  },
   props: {
     movie: Object
   },
@@ -44,7 +35,7 @@ export default {
   },
   methods: {
     moveToDetail() {
-      console.log(this.movie.id)
+      
       this.$router.push({ name: 'MovieDetail' })
     }
   }
