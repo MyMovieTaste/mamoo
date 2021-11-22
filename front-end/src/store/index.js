@@ -9,7 +9,10 @@ export default new Vuex.Store({
   state: {
     isLogin: false,
     username: null,
-    thisYearList: []
+    thisYearList: [],
+    isMovieDetail: false,
+    movieDetail: null,
+    reviewInput: null,
   },
   mutations: {
     LOGIN(state) {
@@ -31,7 +34,7 @@ export default new Vuex.Store({
       commit('LOGOUT')
     },
     getThisYearList({ commit }) {
-      const API_URL = 'http://127.0.0.1:8000/movies/top_rated/'
+      const API_URL = 'http://127.0.0.1:8000/movies/'
       axios.get(`${API_URL}`)
         .then(res => {
           console.log(res)
