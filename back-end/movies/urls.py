@@ -18,5 +18,5 @@ urlpatterns = [
 
     # 리뷰 댓글: 보기 쓰기 삭제
     path('reviews/<int:review_pk>/comments/', views.comment_list_or_create), # get, post
-    path('reviews/<int:review_pk>/comments/<int:comment_pk>/', views.review_detail_or_delete) # get, post, put, delete
+    # path('reviews/<int:review_pk>/comments/<int:comment_pk>/', views.review_detail_or_delete) # get, post, put, delete
   ]
