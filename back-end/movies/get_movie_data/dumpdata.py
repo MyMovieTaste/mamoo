@@ -11,6 +11,17 @@ from tmdb import TMDBHelper
 
 tmdb_helper = TMDBHelper('a7a15875c1c12251bc2930bc181baca0')
 
+# 영화진흥원
+# def get_boxoffice_ranking():
+#   key = 'a2cd9f3c709b02c06e334956df730ea4'	
+#   request_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json'
+#   date = '20211110'
+#   raw_data = requests.get(f'{request_url}?key={key}&targetDt={date}').json()
+#   print(raw_data)
+
+# pprint(get_boxoffice_ranking())
+
+
 def get_top_rated():
   result = []
   ranking = 0
@@ -32,6 +43,7 @@ def get_top_rated():
                 "release_date" : movie.get("release_date"),
                 "poster_path" : movie.get("poster_path"),                
                 "genre_ids" : movie.get("genre_ids"),
+                "year" : int(movie.get("release_date")[:4]),
                 "ranking" : ranking,
             }
         }

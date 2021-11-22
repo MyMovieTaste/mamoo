@@ -4,6 +4,8 @@ from django.conf import settings
 
 # Create your models here.
 
+class Year(models.Model):
+    id = models.CharField(primary_key=True, max_length=4)
 
 class Bookmark(models.Model):
     pass
@@ -20,10 +22,11 @@ class Movie(models.Model):
     popularity = models.FloatField()
     vote_count = models.IntegerField()
     vote_average = models.FloatField()
-    release_date = DateTimeField()
+    release_date = models.DateField()
     poster_path = models.CharField(max_length=200)
     ranking = models.IntegerField()
-    # genre_ids = models.TextField() M:N이라 필드 만들지 않음.
+    # 1:N
+    year = models.ForeignKey(Year, on_delete=models.CASCADE, blank=True)
     # M:N
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')
     # 이 영화를 북마크 한 사람
@@ -48,16 +51,18 @@ class Review(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # 1:N
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    # 대댓글
+    # parent_review = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.movie_title
 
-class Comment(models.Model):
-    content = models.TextField()
-    # 1:N
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+# class Comment(models.Model):
+#     content = models.TextField()
+#     # 1:N
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     review = models.ForeignKey(Review, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.title
