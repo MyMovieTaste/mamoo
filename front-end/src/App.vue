@@ -3,12 +3,18 @@
     <div>
       <div id="nav" class="d-flex justify-content-between">
         <router-link :to="{ name: 'Index' }">Home</router-link>
+        <div>
+          <input v-model="searchInput" type="text">
+          <router-link :to="{ name: 'Search' }">
+            <button @click="search">search</button>
+          </router-link>
+        </div>
         <div v-if="!isLogin">
           <router-link :to="{ name: 'Signup' }">추천받기</router-link> |
           <router-link :to="{ name: 'Login' }">로그인</router-link>
         </div>
         <div v-else>
-          <router-link :to="{ name: 'Profile'}">내 프로필</router-link> | 
+          <router-link :to="{ name: 'MyProfile'}">내 프로필</router-link> | 
           <router-link to="#" @click.native="logout">로그아웃</router-link>
         </div>
       </div>
@@ -26,12 +32,16 @@ export default({
   data: function() {
     return {
     //   isLogin: this.$store.isLogin
+      searchInput: null,
     }
   },
   methods: {
     logout() {
       this.$store.dispatch('logout')
       this.$router.push({ name: 'Login' })
+    },
+    search() {
+      this.$store.dispatch('search', this.searchInput)
     }
   },
   updated: function() {
@@ -39,10 +49,14 @@ export default({
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt')
       const decodedToken = jwt_decode(token)
-      this.$store.state.username = decodedToken.username
-      this.$store.state.isLogin = true
+      const userInfo = {
+        username: decodedToken.username,
+        userId: decodedToken.user_id
+      }
+      this.$store.dispatch('login')
+      this.$store.dispatch('getUserInfo', userInfo)
     } else {
-      this.$store.state.isLogin = false
+      this.$store.dispatch('logout')
     }
   },
   computed: {
@@ -55,6 +69,18 @@ export default({
     //   'isLogin'
     // ])
     this.$store.dispatch('setToken')
+    if (localStorage.getItem('jwt')) {
+      const token = localStorage.getItem('jwt')
+      const decodedToken = jwt_decode(token)
+      const userInfo = {
+        username: decodedToken.username,
+        userId: decodedToken.user_id
+      }
+      this.$store.dispatch('login')
+      this.$store.dispatch('getUserInfo', userInfo)
+    } else {
+      this.$store.dispatch('logout')
+    }
   }
 })
 </script>

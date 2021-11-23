@@ -34,6 +34,7 @@ export default {
     }
   },
   methods: {
+    // 이걸 actions에서 안하지 왜 흠
     login() {
       axios({
         method: 'post',
@@ -44,12 +45,11 @@ export default {
           localStorage.setItem('jwt', res.data.token)
           this.$store.dispatch('login')
           this.$router.push({ name: 'Index' })
+          console.log(res)
         })
-        .catch(err => {
-          console.log(err)
-          // 이거 어떻게 하는걸까 res랑 다르네 궁금
+        .catch(() => {
           // if (err.status === 400) {
-            alert('아이디 혹은 패스워드가 틀립니다.')
+          alert('아이디 혹은 패스워드가 틀립니다.')
           // }
         })
     }
