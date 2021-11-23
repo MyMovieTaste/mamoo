@@ -13,17 +13,19 @@ from .models import Genre, Movie, Review, Year
 #         model = Comment
 #         fields = '__all__'
 
-# class ReviewListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Review
-#         fields = '__all__'
+# 리뷰 불러오기 및 작성
+class ReviewListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+        read_only_fields = ('movie', 'user',)
 
 # 리뷰 상세
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
-        read_only_fields = ('movie', 'user')
+        read_only_fields = ('movie', 'user',)
 
 # 영화검색
 class MovieSearchSerializer(serializers.ModelSerializer):

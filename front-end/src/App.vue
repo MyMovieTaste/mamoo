@@ -50,6 +50,12 @@ export default({
       'isLogin'
     ])
   },
+  created: function () {
+    // mapGetters([
+    //   'isLogin'
+    // ])
+    this.$store.dispatch('setToken')
+  }
 })
 </script>
 

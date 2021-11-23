@@ -84,11 +84,12 @@ export default {
         movie_title: this.movieDetail.title,
         rank: this.rate,
       }
+      this.setToken()
       axios({
         method: 'post',
         url: `http://127.0.0.1:8000/movies/${this.movieDetail.id}/reviews/`,
         data: review,
-        headers: this.setToken()
+        headers: this.$store.state.token
       })
         .then(() => {
           this.$store.dispatch('getReviews', this.movieDetail.id)
@@ -96,11 +97,7 @@ export default {
         })
     },
     setToken() {
-      const token = localStorage.getItem('jwt')
-      const headers = {
-        Authorization: `JWT ${token}`
-      }
-      return headers
+      this.$store.dispatch('setToken')
     }
   },
   computed: {

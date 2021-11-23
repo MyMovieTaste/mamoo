@@ -15,10 +15,18 @@ export default new Vuex.Store({
     reviewInput: null,
     reviews: [],
     myRecommendList: [],
+    token: null,
   },
   mutations: {
     LOGIN(state) {
       state.isLogin = true
+    },
+    SETTOKEN(state) {
+      const token = localStorage.getItem('jwt')
+      const headers = {
+        Authorization: `JWT ${token}`
+      }
+      state.token = headers 
     },
     LOGOUT(state) {
       state.isLogin = false
@@ -92,10 +100,15 @@ export default new Vuex.Store({
     resetReviewInput({commit}){
       commit('RESETREVIEWINPUT')
     },
+    setToken({commit}) {
+      commit('SETTOKEN')
+    },
     getMyRecommendList({commit}) {
+      console.log(this.state.token)
       axios({
         method: 'get',
         url: 'http://127.0.0.1:8000/movies/movie_recommend/',
+        headers: this.state.token
       })
         .then(res => {
           console.log(res)
