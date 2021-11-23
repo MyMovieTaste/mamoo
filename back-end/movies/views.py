@@ -80,6 +80,7 @@ def movie_recommend(request):
     
     # (추가할부분 : 유저가 영화에 리뷰를 4점 줬다가 2점 주면, 해당 리뷰평점은 2점인것으로 가정)
 
+
     review_gte4 = user_reviews.filter(rank__gte=4)
     review_gte4_count = user_reviews.filter(rank__gte=4).count()
 

@@ -26,10 +26,17 @@
               <option value="1">★</option>
             </select>
             <textarea 
-              :review-input="reviewInput"
+              :value="reviewInput"
               @keyup="reviewInputChange"
             ></textarea>
             <button @click="reviewSubmit">작성</button>
+            <hr>
+            <h4>리뷰</h4>
+            <review
+              v-for="review in reviews"
+              :review="review"
+              :key="review.id"
+            ></review>
           </div>
           <!-- <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -48,13 +55,15 @@ import MyRecommendList from '@/components/MyRecommendList.vue'
 import { mapGetters } from 'vuex'
 import ThisYearListByGenre from '@/components/ThisYearListByGenre.vue'
 import axios from 'axios'
+import Review from '@/components/Review.vue'
 
 export default {
   name: 'Index',
   components: {
     RecommendList,
     MyRecommendList,
-    ThisYearListByGenre
+    ThisYearListByGenre,
+    Review
   },
   data: function () {
     return {
@@ -64,37 +73,31 @@ export default {
   },
   methods: {
     toggleMovieDetail () {
-      // if (this.$store.state.isMovieDetail) {
-        this.$store.state.isMovieDetail = false
-      // } else {
-      //   this.$store.state.isMovieDetail = true
-      // }
-      // console.log(this.$store.state.isMovieDetail)
+        this.$store.dispatch('toggleMovieDetail')
     },
     reviewInputChange(event) {
-      this.$store.state.reviewInput = event.target.value
-      console.log(this.$store.state.reviewInput)
+      this.$store.dispatch('reviewInputChange', event.target.value)
     },
     reviewSubmit() {
       const review = {
         content: this.reviewInput,
-        movie_title: this.movieDetail.id,
+        movie_title: this.movieDetail.title,
         rank: this.rate,
       }
+      this.setToken()
       axios({
         method: 'post',
         url: `http://127.0.0.1:8000/movies/${this.movieDetail.id}/reviews/`,
         data: review,
-        headers: this.setToken()
-
+        headers: this.$store.state.token
       })
+        .then(() => {
+          this.$store.dispatch('getReviews', this.movieDetail.id)
+          this.$store.dispatch('resetReviewInput')
+        })
     },
     setToken() {
-      const token = localStorage.getItem('jwt')
-      const headers = {
-        Authorization: `JWT ${token}`
-      }
-      return headers
+      this.$store.dispatch('setToken')
     }
   },
   computed: {
@@ -103,17 +106,24 @@ export default {
     ]),
     isMovieDetail() {
       return this.$store.state.isMovieDetail
-    }
-    ,movieDetail() {
+    },
+    movieDetail() {
       return this.$store.state.movieDetail
     },
     reviewInput() {
       return this.$store.state.reviewInput
-    }
+    },
+    reviews() {
+      return this.$store.state.reviews
+    },
   },
   created: function() {
     this.$store.dispatch('getThisYearList')
+    if (this.isLogin) {
+      this.$store.dispatch('getMyRecommendList')
+    }
   }
+
 }
 </script>
 
