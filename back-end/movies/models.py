@@ -37,7 +37,6 @@ class Movie(models.Model):
 
     
 class Review(models.Model):
-    movie_title = models.CharField(max_length=100)
     content = models.TextField()
     RATINGS = [
         (1, '★'),
