@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{ username }}님께 추천하는 영화</p>
+    <h4>{{ username }}님께 추천하는 영화</h4>
     <my-recommend-list-item
       v-for="movie in myRecommendList"
       :key="movie.id"
