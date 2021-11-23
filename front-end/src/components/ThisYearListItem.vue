@@ -1,7 +1,7 @@
 <template>
   <div class="col">
     <div class="card d-block" style="width: 18rem;"
-      @click="[toggleMovieDetail(), getMovieDetail()]"
+      @click="[toggleMovieDetail(), getMovieDetail(), getReviews()]"
     >
       <!-- <router-link :to="{ name: 'MovieDetail' }"> -->
         <img :src="posterPath" alt="" class="card-img-top">
@@ -27,7 +27,7 @@
 
 <script>
 // import MovieDetail from '@/components/MovieDetail.vue'
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   name: 'ThisYearListItem',
@@ -49,25 +49,14 @@ export default {
       this.$router.push({ name: 'MovieDetail' })
     },
     toggleMovieDetail () {
-      // if (this.$store.state.isMovieDetail) {
-      //   this.$store.state.isMovieDetail = false
-      // } else {
-        this.$store.state.isMovieDetail = true
-      // }
-      // console.log(this.$store.state.isMovieDetail)
-        this.$store.state.movieDetail = this.movie.id
-        // console.log(this.$store.state.movieDetail)
+        this.$store.dispatch('toggleMovieDetail')
     },
     getMovieDetail() {
-      const movieId = this.$store.state.movieDetail
-      axios({
-        method: 'get',
-        url: `http://127.0.0.1:8000/movies/${movieId}/`,
-      })
-        .then(res => {
-          this.$store.state.movieDetail = res.data
-          // console.log(res.data)
-        })
+      this.$store.dispatch('getMovieDetail', this.movie.id)
+    },
+    getReviews() {
+      const movieId = this.movie.id
+      this.$store.dispatch('getReviews', movieId)
     }
   },
 }

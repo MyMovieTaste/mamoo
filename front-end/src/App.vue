@@ -35,6 +35,7 @@ export default({
     }
   },
   updated: function() {
+    // 이것도 mutations에서 해야하나
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt')
       const decodedToken = jwt_decode(token)
