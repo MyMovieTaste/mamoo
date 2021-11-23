@@ -8,6 +8,8 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from collections import Counter
 from itertools import islice
 from django.contrib.auth import REDIRECT_FIELD_NAME, get_user_model
+from django.http.response import JsonResponse
+
 
 # 연도테이블생성
 @api_view(['GET'])
@@ -73,9 +75,13 @@ def movie_recommend(request):
     # user = get_object_or_404(User, pk=user_pk) # test1
     # token 받은 후
     user = request.user
-    print
+
     user = getattr(user, 'id')
     user_reviews = Review.objects.all().filter(user=user)
+    
+    # (추가할부분 : 유저가 영화에 리뷰를 4점 줬다가 2점 주면, 해당 리뷰평점은 2점인것으로 가정)
+
+
     review_gte4 = user_reviews.filter(rank__gte=4)
     review_gte4_count = user_reviews.filter(rank__gte=4).count()
 
@@ -117,17 +123,18 @@ def movie_recommend(request):
         recommend_movies_no_overlap_ids = list(set(recommend_movies)) # 중복제거 # [121, 278, 857, 76, 70]
         recommend_movies_no_overlap = Movie.objects.filter(id__in=recommend_movies_no_overlap_ids) # Movie QuerySet
         
-        # 4. 만약 추천 갯수가 5개 미만이면, 인기도 순(popularity), 최신 순으로 5개를 더 출력한다.
-        if len(recommend_movies_no_overlap_ids) < 5:
+        # 4. 만약 추천 갯수가 5개 미만이면, 인기도 순(popularity), 최신순으로 5개를 더 출력한다.
+        if len(recommend_movies_no_overlap_ids) < 10:
             more = Movie.objects.order_by('-popularity', '-release_date')[:5]
             recommend_movies_no_overlap = recommend_movies_no_overlap | more
-            # recommend_movies_no_overlap_ids.append(more['id']) error
+            # recommend_movies_no_overlap_ids.append(more['id'])
 
-        # print(recommend_movies_no_overlap_ids)
-        # print(recommend_movies_no_overlap)
+        print(recommend_movies_no_overlap)
+        print(recommend_movies_no_overlap_ids)
         
         serializers = RecommendMovieSerializer(recommend_movies_no_overlap, many=True)
         return Response(serializers.data)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -238,16 +245,14 @@ def bookmarks(request, movie_pk):
     user = request.user
     movie = get_object_or_404(Movie, pk=movie_pk)
     if user not in movie.bookmarked_users.all():
-        movie.bookmarked_users.add(movie)
+        user.bookmarked_movies.add(movie)
     else:
-        movie.bookmarked_users.remove(movie)
-        
-    # 이 영화정보가 유저의 북마크리스트 안에 없으면 추가, 있으면 삭제
-    # 이 코드가 작동하지 않는 이유가 뭔지???
-    # if movie not in user.bookmarked_movies.all():
-    #     user.bookmarked_movies.add(user)
-    # else:
-    #     user.bookmarked_movies.remove(movie)
+        user.bookmarked_movies.remove(movie)
+
+    data = {
+        'message' : 'bookmarked!'
+    }
+    return JsonResponse(data=data)
 
 
 # 리뷰리스트 및 리뷰작성(특정 영화의)
