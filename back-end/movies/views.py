@@ -73,7 +73,7 @@ def movie_recommend(request):
     # user = get_object_or_404(User, pk=user_pk) # test1
     # token 받은 후
     user = request.user
-    print(user)
+    print
     user = getattr(user, 'id')
     user_reviews = Review.objects.all().filter(user=user)
     review_gte4 = user_reviews.filter(rank__gte=4)

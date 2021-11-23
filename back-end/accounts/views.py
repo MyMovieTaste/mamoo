@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 # 프로필
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def profile(requst, username):
+def profile(request, username):
     User = get_user_model()
     profile_user = get_object_or_404(User, username=username)
     serializer = ProfileSerializer(data=request.data)
