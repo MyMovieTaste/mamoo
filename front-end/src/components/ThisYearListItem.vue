@@ -1,20 +1,20 @@
 <template>
   <div class="col">
     <div class="card d-block" style="width: 18rem;"
-
-      :data-movie-id="{movie}"
+      @click="[toggleMovieDetail(), getMovieDetail(), getReviews()]"
     >
       <!-- <router-link :to="{ name: 'MovieDetail' }"> -->
         <img :src="posterPath" alt="" class="card-img-top">
         <div class="card-body">
           <h5 class="card-title">{{ movie.title }}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <movie-detail :movieId="movie.id"></movie-detail>
+            <!-- <movie-detail :movieId="movie.id"></movie-detail> -->
           </li>
         </ul>
+        
         <!-- <div class="card-body"> -->
           <!-- <a href="#" class="card-link">Another link</a> -->
         <!-- </div> -->
@@ -26,12 +26,13 @@
 </template>
 
 <script>
-import MovieDetail from '@/components/MovieDetail.vue'
+// import MovieDetail from '@/components/MovieDetail.vue'
+// import axios from 'axios'
 
 export default {
   name: 'ThisYearListItem',
   components: {
-    MovieDetail,
+    // MovieDetail,
   },
   props: {
     movie: Object
@@ -46,8 +47,18 @@ export default {
     moveToDetail() {
       console.log(this.movie.id)
       this.$router.push({ name: 'MovieDetail' })
+    },
+    toggleMovieDetail () {
+        this.$store.dispatch('toggleMovieDetail')
+    },
+    getMovieDetail() {
+      this.$store.dispatch('getMovieDetail', this.movie.id)
+    },
+    getReviews() {
+      const movieId = this.movie.id
+      this.$store.dispatch('getReviews', movieId)
     }
-  }
+  },
 }
 </script>
 

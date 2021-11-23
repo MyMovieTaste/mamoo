@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Genre, Movie, Review, Year
+from django.contrib.auth import get_user_model
+
 
 
 # class CommentSerializer(serializers.ModelSerializer):
@@ -13,17 +15,28 @@ from .models import Genre, Movie, Review, Year
 #         model = Comment
 #         fields = '__all__'
 
-# class ReviewListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Review
-#         fields = '__all__'
-
-# 리뷰 상세
-class ReviewSerializer(serializers.ModelSerializer):
+# 리뷰 불러오기 및 작성
+class ReviewListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
-        # read_only_fields = ('movie', 'user')
+        read_only_fields = ('movie', 'user',)
+
+# 리뷰 상세
+# NestSerialiser -> StringRelatedField 
+# class UsernameSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = get_user_model()
+#         fields = ('id', 'username',)
+        
+class ReviewSerializer(serializers.ModelSerializer):
+    # user = UsernameSerializer(read_only=True)
+    user = serializers.StringRelatedField()
+    
+    class Meta:
+        model = Review
+        fields = '__all__'
+        read_only_fields = ('movie', 'user',)
 
 # 영화검색
 class MovieSearchSerializer(serializers.ModelSerializer):

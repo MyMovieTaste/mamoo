@@ -1,26 +1,40 @@
+from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ProfileSerializer
 from django.contrib.auth import get_user_model
 
 # 프로필
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
-def profile(requst, username):
+def profile(request, username):
     User = get_user_model()
-    profile_user = get_object_or_404(User, username=username)
-    serializer = ProfileSerializer(data=request.data)
+    profile_user = User.objects.get(username=username) 
+    serializer = ProfileSerializer(profile_user) # object로 넣어야
     return Response(serializer.data)
 
 # 팔로우
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
-def follow(requst, user_pk):
-    pass
-
+def follow(request, user_pk):
+    # token 받기 전 
+    # my_pk = request.data['user'] # 5
+    User = get_user_model()
+    # me = get_object_or_404(User, pk=my_pk) 
+    you = get_object_or_404(User, pk=user_pk)
+    me = request.user
+    if you not in me.followings.all():
+        me.followings.add(you)
+    else:
+        me.followings.remove(you)
+    data = {
+        'message' : 'follow!'
+    }
+    return JsonResponse(data=data)
+    
 
 # 회원가입
 @api_view(['POST'])

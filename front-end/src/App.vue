@@ -35,6 +35,7 @@ export default({
     }
   },
   updated: function() {
+    // 이것도 mutations에서 해야하나
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt')
       const decodedToken = jwt_decode(token)
@@ -49,6 +50,12 @@ export default({
       'isLogin'
     ])
   },
+  created: function () {
+    // mapGetters([
+    //   'isLogin'
+    // ])
+    this.$store.dispatch('setToken')
+  }
 })
 </script>
 
