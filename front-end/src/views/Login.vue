@@ -45,7 +45,6 @@ export default {
           localStorage.setItem('jwt', res.data.token)
           this.$store.dispatch('login')
           this.$router.push({ name: 'Index' })
-          console.log(res)
         })
         .catch(() => {
           // if (err.status === 400) {

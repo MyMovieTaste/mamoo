@@ -1,6 +1,6 @@
 <template>
   <!-- esc이거 왜 제대로 작동을 안할까 -->
-  <div @keyup.esc="toggleMovieDetail">    
+  <div @keyup.esc="toggleMovieDetail">
     <recommend-list v-if="!isLogin"></recommend-list>
     <my-recommend-list v-else></my-recommend-list>
     <this-year-list-by-genre></this-year-list-by-genre>
@@ -19,10 +19,15 @@
             <img src="" alt="">
             <div>
               <h4>{{ movieDetail.title }}
-                <button @click="bookmark">소장하기</button>
-                <button @click="bookmark">소장됨</button>
+                <button 
+                  v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
+                  @click="bookmark">소장하기</button>
+                <button
+                  v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
+                  @click="bookmark">소장됨</button>
               </h4>
             </div>
+            {{ movieDetail }}
             <p>{{ movieDetail.year }}</p>
             <p>평점: {{ movieDetail.vote_average }}</p>
             <!-- v-model로 하는게 맞나 -->
@@ -91,7 +96,6 @@ export default {
     reviewSubmit() {
       const review = {
         content: this.reviewInput,
-        movie_title: this.movieDetail.title,
         rank: this.rate,
       }
       this.setToken()
@@ -105,13 +109,18 @@ export default {
           this.$store.dispatch('getReviews', this.movieDetail.id)
           this.$store.dispatch('resetReviewInput')
         })
+        // 로그인 안했을때
+        // 역시 에러 구분하는거 어떻게 하는지 잘 모르겠다
+        .catch(err => {
+          console.log(err)
+          alert('리뷰를 남기려면 로그인해주세요.')
+        })
     },
     setToken() {
       this.$store.dispatch('setToken')
     },
     bookmark() {
-
-      // this.$store.dispatch('')
+      this.$store.dispatch('bookmark', this.movieDetail.id)
     }
   },
   computed: {
@@ -130,7 +139,20 @@ export default {
     reviews() {
       return this.$store.state.reviews
     },
-
+    userInfo() {
+      return this.$store.state.userInfo
+    },
+    isLoginAndIsBookmarked() {
+      if (this.isLogin) {
+        if (this.userInfo.bookmarked_movies.includes(this.movieDetail.id)) {
+          return 'isLoginisBookmarked'
+        } else {
+          return 'isLoginNotBookmarked'
+        }
+      } else {
+        return null
+      }
+    }
   },
   created: function() {
     if (this.isLogin) {

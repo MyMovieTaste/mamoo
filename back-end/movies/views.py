@@ -292,10 +292,10 @@ def review_detail_or_update_or_delete(request, review_pk):
 
     elif request.method == 'PUT':
         # token 받기 전 
-        user_pk = request.data['user'] # 5
-        User = get_user_model()
-        user = get_object_or_404(User, pk=user_pk) # test1
-        # user = request.user
+        # user_pk = request.data['user'] # 5
+        # User = get_user_model()
+        # user = get_object_or_404(User, pk=user_pk) # test1
+        user = request.user
         serializer = ReviewSerializer(review, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user)

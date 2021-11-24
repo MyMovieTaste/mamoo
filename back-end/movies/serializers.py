@@ -17,6 +17,8 @@ from django.contrib.auth import get_user_model
 
 # 리뷰 불러오기 및 작성
 class ReviewListSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    
     class Meta:
         model = Review
         fields = '__all__'

@@ -5,7 +5,7 @@
       <span>{{ rate }}</span> | 
       <span>{{ review.content }}</span>
     </span>
-    <!-- 수정을 동시에 여러개 하지 않는다 가정; 근데 동시 여러개 수정하게 가능할듯? -->
+    <!-- 수정을 동시에 여러개 하지 않는다 가정. 근데 동시 여러개 수정하게 가능할듯? -->
     <button
       v-if="isOwnerAndIsRevising === 'isOwnerAndNotRevising'"
       @click="toggleRevise"
@@ -79,6 +79,12 @@ export default {
       this.$store.dispatch('reviewReviseInputChange', event.target.value)
     },
     reviewReviseSubmit() {
+      const reviewReviseInfo = {
+        review: this.review,
+        rate: this.reviseRate,
+        content: this.$store.state.reviewReviseInput
+      }
+      this.$store.dispatch('reviewReviseSubmit', reviewReviseInfo)
       this.toggleRevise()
     },
     toggleDeleteConfirmation() {
@@ -103,7 +109,7 @@ export default {
       }
     },
     checkIsOwner() {
-      if (this.$store.state.userId === this.review.user) {
+      if (this.$store.state.username === this.review.user) {
         return true
       } else {
         return false
