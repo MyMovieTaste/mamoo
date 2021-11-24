@@ -4,7 +4,8 @@ import Index from '../views/Index.vue'
 import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import SignupReview from '../views/SignupReview.vue'
-import Profile from '../views/Profile.vue'
+import MyProfile from '../views/MyProfile.vue'
+import Search from '../views/Search.vue'
 // import MovieDetail from '../views/MovieDetail.vue'
 
 Vue.use(VueRouter)
@@ -31,9 +32,14 @@ const routes = [
   //   component: MovieDetail
   // },
   {
+    path: '/search',
+    name: 'Search',
+    component: Search
+  },
+  {
     path: '/profile',
-    name: 'Profile',
-    component: Profile
+    name: 'MyProfile',
+    component: MyProfile
   },
   {
     path: '/signupreview',

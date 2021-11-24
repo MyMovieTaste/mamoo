@@ -1,12 +1,13 @@
 <template>
-  <div>    
+  <!-- esc이거 왜 제대로 작동을 안할까 -->
+  <div @keyup.esc="toggleMovieDetail">    
     <recommend-list v-if="!isLogin"></recommend-list>
     <my-recommend-list v-else></my-recommend-list>
     <this-year-list-by-genre></this-year-list-by-genre>
+    <top-list-by-year></top-list-by-year>
 
     <div class="modal" :class="{ 'showModal': isMovieDetail}">
-    
-      <div class="modal-dialog">
+      <div v-if="movieDetail" class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
@@ -16,7 +17,14 @@
           </div>
           <div class="modal-body">
             <img src="" alt="">
-            <h4 v-if="movieDetail">{{ movieDetail.title }}</h4>
+            <div>
+              <h4>{{ movieDetail.title }}
+                <button @click="bookmark">소장하기</button>
+                <button @click="bookmark">소장됨</button>
+              </h4>
+            </div>
+            <p>{{ movieDetail.year }}</p>
+            <p>평점: {{ movieDetail.vote_average }}</p>
             <!-- v-model로 하는게 맞나 -->
             <select v-model="rate" name="rank" id="rate">
               <option value="5">★★★★★</option>
@@ -56,6 +64,7 @@ import { mapGetters } from 'vuex'
 import ThisYearListByGenre from '@/components/ThisYearListByGenre.vue'
 import axios from 'axios'
 import Review from '@/components/Review.vue'
+import TopListByYear from '@/components/TopListByYear.vue'
 
 export default {
   name: 'Index',
@@ -63,7 +72,8 @@ export default {
     RecommendList,
     MyRecommendList,
     ThisYearListByGenre,
-    Review
+    Review,
+    TopListByYear,
   },
   data: function () {
     return {
@@ -98,6 +108,10 @@ export default {
     },
     setToken() {
       this.$store.dispatch('setToken')
+    },
+    bookmark() {
+
+      // this.$store.dispatch('')
     }
   },
   computed: {
@@ -116,14 +130,15 @@ export default {
     reviews() {
       return this.$store.state.reviews
     },
+
   },
   created: function() {
-    this.$store.dispatch('getThisYearList')
     if (this.isLogin) {
       this.$store.dispatch('getMyRecommendList')
     }
+    this.$store.dispatch('getThisYearList')
+    this.$store.dispatch('getTopListByYear')
   }
-
 }
 </script>
 
