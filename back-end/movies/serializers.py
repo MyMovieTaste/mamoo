@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 
 # 리뷰 보기
 class ReviewListSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    
     class Meta:
         model = Review
         fields = '__all__'

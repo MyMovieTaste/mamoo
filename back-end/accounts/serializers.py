@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 # 프로필 정보
 # StringRelatedField
 class ProfileSerializer(serializers.ModelSerializer):
-    bookmarked_movies = serializers.StringRelatedField(many=True)
+    # bookmarked_movies = serializers.StringRelatedField(many=True)
     followings = serializers.StringRelatedField(many=True)
     followers = serializers.StringRelatedField(many=True)
     followings_count = serializers.IntegerField(source='followings.count', read_only=True) 
@@ -22,4 +22,4 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = get_user_model()
-        fields = ('username', 'followings_count','followings','followers_count', 'followers','bookmarked_movies',)
+        fields = ('id', 'username', 'followings_count','followings','followers_count', 'followers','bookmarked_movies',)

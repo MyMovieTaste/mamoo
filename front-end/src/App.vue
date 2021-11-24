@@ -4,7 +4,9 @@
       <div id="nav" class="d-flex justify-content-between">
         <router-link :to="{ name: 'Index' }">Home</router-link>
         <div>
-          <input v-model="searchInput" type="text">
+          <input @keyup.enter="search"
+            @keyup="searchInputChange"
+            :value="searchInput" type="text">
           <router-link :to="{ name: 'Search' }">
             <button @click="search">search</button>
           </router-link>
@@ -14,7 +16,7 @@
           <router-link :to="{ name: 'Login' }">로그인</router-link>
         </div>
         <div v-else>
-          <router-link :to="{ name: 'MyProfile'}">내 프로필</router-link> | 
+          <a href="#" @click="toMyProfile">내 프로필</a> | 
           <router-link to="#" @click.native="logout">로그아웃</router-link>
         </div>
       </div>
@@ -31,8 +33,7 @@ import { mapGetters } from 'vuex'
 export default({
   data: function() {
     return {
-    //   isLogin: this.$store.isLogin
-      searchInput: null,
+      // isLogin: this.$store.isLogin
     }
   },
   methods: {
@@ -42,32 +43,26 @@ export default({
     },
     search() {
       this.$store.dispatch('search', this.searchInput)
-    }
-  },
-  updated: function() {
-    // 이것도 mutations에서 해야하나
-    if (localStorage.getItem('jwt')) {
-      const token = localStorage.getItem('jwt')
-      const decodedToken = jwt_decode(token)
-      const userInfo = {
-        username: decodedToken.username,
-        userId: decodedToken.user_id
-      }
-      this.$store.dispatch('login')
-      this.$store.dispatch('getUserInfo', userInfo)
-    } else {
-      this.$store.dispatch('logout')
+    },
+    toMyProfile() {
+      this.$router.push({ name: 'Profile', params: { personname: this.username }})
+    },
+    searchInputChange(event) {
+      this.$store.dispatch('searchInputChange', event.target.value)
     }
   },
   computed: {
     ...mapGetters([
       'isLogin'
-    ])
+    ]),
+    username() {
+      return this.$store.state.username
+    },
+    searchInput() {
+      return this.$store.state.searchInput
+    }
   },
   created: function () {
-    // mapGetters([
-    //   'isLogin'
-    // ])
     this.$store.dispatch('setToken')
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt')
@@ -81,7 +76,8 @@ export default({
     } else {
       this.$store.dispatch('logout')
     }
-  }
+    console.log(this.username)
+  },
 })
 </script>
 
