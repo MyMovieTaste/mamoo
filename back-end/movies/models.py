@@ -38,14 +38,7 @@ class Movie(models.Model):
     
 class Review(models.Model):
     content = models.TextField()
-    RATINGS = [
-        (1, '★'),
-        (2, '★★'),
-        (3, '★★★'),
-        (4, '★★★★'),
-        (5, '★★★★★'),
-    ]
-    rank = models.IntegerField(choices=RATINGS, default=5)
+    rank = models.IntegerField(default=5)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # 1:N

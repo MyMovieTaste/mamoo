@@ -2,20 +2,7 @@ from rest_framework import serializers
 from .models import Genre, Movie, Review, Year
 from django.contrib.auth import get_user_model
 
-
-
-# class CommentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Comment
-#         fields = '__all__'
-#         read_only_fields = ('review', )
-
-# class CommentListSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Comment
-#         fields = '__all__'
-
-# 리뷰 불러오기 및 작성
+# 리뷰 보기
 class ReviewListSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     
@@ -24,15 +11,8 @@ class ReviewListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('movie', 'user',)
 
-# 리뷰 상세
-# NestSerialiser -> StringRelatedField 
-# class UsernameSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = get_user_model()
-#         fields = ('id', 'username',)
-        
+# 리뷰 상세        
 class ReviewSerializer(serializers.ModelSerializer):
-    # user = UsernameSerializer(read_only=True)
     user = serializers.StringRelatedField()
     
     class Meta:
@@ -66,7 +46,7 @@ class RecentMovieByGenreListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ['id', 'name', 'movies_by_genre']
+        fields = ('id', 'name', 'movies_by_genre',)
 
     def get_movies_by_genre(self, obj):
         movies = Movie.objects.all().order_by('-release_date')
@@ -78,12 +58,11 @@ class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Year
-        fields = ['id','movies_by_year']
+        fields = ('id','movies_by_year',)
 
     def get_movies_by_year(self, obj):
         movies = Movie.objects.all().order_by('-vote_average')
         return movies.filter(year_id=obj.id).values()
-
 
 # 장르 리스트
 class GenreListSerializer(serializers.ModelSerializer):

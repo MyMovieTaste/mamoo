@@ -81,7 +81,6 @@ def movie_recommend(request):
     
     # (추가할부분 : 유저가 영화에 리뷰를 4점 줬다가 2점 주면, 해당 리뷰평점은 2점인것으로 가정)
 
-
     review_gte4 = user_reviews.filter(rank__gte=4)
     review_gte4_count = user_reviews.filter(rank__gte=4).count()
 
@@ -122,72 +121,38 @@ def movie_recommend(request):
 
         recommend_movies_no_overlap_ids = list(set(recommend_movies)) # 중복제거 # [121, 278, 857, 76, 70]
         recommend_movies_no_overlap = Movie.objects.filter(id__in=recommend_movies_no_overlap_ids) # Movie QuerySet
-        
-        # 4. 만약 추천 갯수가 5개 미만이면, 인기도 순(popularity), 최신순으로 5개를 더 출력한다.
-        if len(recommend_movies_no_overlap_ids) < 10:
-            more = Movie.objects.order_by('-popularity', '-release_date')[:5]
-            recommend_movies_no_overlap = recommend_movies_no_overlap | more
-            # recommend_movies_no_overlap_ids.append(more['id'])
 
-        print(recommend_movies_no_overlap)
-        print(recommend_movies_no_overlap_ids)
-        
+        # 4. 만약 추천 갯수가 5개 미만이면, 인기도 순(popularity), 최신순으로 5개를 더 출력한다. (front)
+
         serializers = RecommendMovieSerializer(recommend_movies_no_overlap, many=True)
         return Response(serializers.data)
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def movie_recommend_genre(request):
-    # 장르 제외한 추천과 동일한 부분
+#특정 사용자가 4점이상 준 리뷰들의 장르별 비율을 구한다.
+def movie_mypick_genre_ratio(request):
     # token 받기 전 
-    user_pk = request.data['user'] # 5
-    User = get_user_model()
-    user = get_object_or_404(User, pk=user_pk) # test1
+    # user_pk = request.data['user'] # 5
+    # User = get_user_model()
+    # user = get_object_or_404(User, pk=user_pk) # test1
     # token 받은 후
-    # user = request.user
+    user = request.user
     user_reviews = Review.objects.all().filter(user=user)
 
     review_gte4 = user_reviews.filter(rank__gte=4)
     review_gte4_count = user_reviews.filter(rank__gte=4).count()
 
+    # 1. 4점 이상인 리뷰를 골라서 해당 영화 정보를 찾는다.
     if review_gte4_count >= 5:
         movie_list_gte4 = []
         for review in review_gte4:
             movie_id = getattr(review, 'movie_id') 
             if movie_id not in movie_list_gte4:
                 movie_list_gte4.append(movie_id)   
-        
-        reviews = Review.objects.all().exclude(user=user)
-        same_taste_users = []
-        for movie in movie_list_gte4:
-            for review in reviews:
-                user_id = getattr(review, 'user_id')
-                movie_id = getattr(review, 'movie_id')
-                if movie_id == movie and user_id not in same_taste_users:
-                    same_taste_users.append(user_id)
 
-        recommend_movies = []
-        User = get_user_model()
-        for same_taste_user in same_taste_users:
-            s = User.objects.get(id=same_taste_user) 
-            reviews = s.user_reviews.all()
-            rm = reviews.filter(user=same_taste_user).values('movie') 
-            for r in rm:
-                if r['movie'] not in movie_list_gte4:  
-                    recommend_movies.append(r['movie'])
-            recommend_movies_no_overlap_ids = list(set(recommend_movies)) 
-            recommend_movies_no_overlap = Movie.objects.filter(id__in=recommend_movies_no_overlap_ids)
-
-        if len(recommend_movies_no_overlap_ids) < 5:
-            more = Movie.objects.order_by('-popularity', '-release_date')[:5]
-            recommend_movies_no_overlap = recommend_movies_no_overlap | more
-
-    #장르추가########################################################특정 사용자가 4점이상 준 리뷰들의 장르별 비율을 구한다.
-
-    # 1. 4점 이상인 리뷰를 골라서 해당 영화 정보를 찾는다.
-    genres_movie_list_gte4 = [] # [13, 24, 122, 335, 598, 1124, 4348, 489, 14]
     # 2. 해당 영화들의 장르를 담는다. (중복포함)
+    genres_movie_list_gte4 = [] # [13, 24, 122, 335, 598, 1124, 4348, 489, 14]
     for movie_id in movie_list_gte4:
         movie = Movie.objects.filter(id=movie_id) 
         genre_ids = movie.values('genre_ids') # [{'genre_ids': 18}, {'genre_ids': 35}, {'genre_ids': 10749}]>
@@ -195,34 +160,39 @@ def movie_recommend_genre(request):
         for genre_id in genre_ids:
                 genres_movie_list_gte4.append(genre_id['genre_ids'])
 
-    # 3. 장르별 갯수를 구한다.
-    genre_ratio_movie_list_gte4 = dict(Counter(genres_movie_list_gte4)) # {18: 7, 35: 1, 10749: 2, 28: 2, 80: 2, 12: 1, 14: 1, 37: 1, 53: 1, 9648: 1}
+    # 3. 장르별 갯수를 구한다.  => 변경 | 장르별 비율만 front로 전달
+    genre_ratio_movie_list_gte4 = dict(Counter(genres_movie_list_gte4)) 
 
+    total = sum(genre_ratio_movie_list_gte4.values())
+
+    for genre_id, cnt in genre_ratio_movie_list_gte4.items():
+        genre_ratio_movie_list_gte4[genre_id] = round(cnt / total * 100, 1)
+
+    # 4-6 제외
     # 4. 특정 사용자가 4점 이상 준 영화와 같은 영화의 리뷰를 남긴 다른 유저를 찾는다. 
     # 5. 다른 유저의 리스트에서 높은 평점 중 내가 쓴 리뷰와 겹치지 않는 영화를 추천한다.
+    # 6. 추천영화 리스트에서 해당 장르 갯수대로 하나씩 뽑는다. 
+    # result = []
+    # for genre_id, cnt in genre_ratio_movie_list_gte4.items(): # 12,1  28,1  878,1
+    #     c = 0
+    #     for i in range(len(recommend_movies)):
+    #         movie = Movie.objects.get(id=recommend_movies[i])
+    #         if genre_id in movie.genre_ids:
+    #             result.append(movie)
+    #             recommend_movies.pop(i)
+    #             c += 1
+    #             if c == cnt:
+    #                 break
+    #         else:
+    #             # 동일 장르이면서 평점(vote_average)가 높은 영화
+    #             alt = Movie.objects.filter(genre_ids__contains=genre_id).order_by('-vote_average')
+    #             result.append(alt)
+    #             c += 1
+    #             if c == cnt:
+    #                 break
 
-    # 6. 추천영화 리스트에서 해당 장르 갯수대로 하나씩 뽑는다.
-    result = []
-    for genre_id, cnt in genre_ratio_movie_list_gte4.items(): # 12,1  28,1  878,1
-        c = 0
-        for i in range(len(recommend_movies)):
-            movie = Movie.objects.get(id=recommend_movies[i])
-            if genre_id in movie.genre_ids:
-                result.append(movie)
-                recommend_movies.pop(i)
-                c += 1
-                if c == cnt:
-                    break
-            else:
-                # 동일 장르이면서 평점(vote_average)가 높은 영화
-                alt = Movie.objects.filter(genre_ids__contains=genre_id).order_by('-vote_average')
-                result.append(alt)
-                c += 1
-                if c == cnt:
-                    break
-
-    serializers = RecommendMovieSerializer(result, many=True)
-    return Response(serializers.data)
+    # serializers = RecommendMovieSerializer(genre_ratio_movie_list_gte4, many=True)
+    return Response(genre_ratio_movie_list_gte4)
 
 
 # 장르 리스트
@@ -252,6 +222,7 @@ def bookmarks(request, movie_pk):
     data = {
         'message' : 'bookmarked!'
     }
+    
     return JsonResponse(data=data)
 
 
@@ -274,8 +245,6 @@ def review_list_or_create(request, movie_pk):
         # user = get_object_or_404(User, pk=user_pk) # test1
 
         user = request.user
-        # print(user)
-
         serializer = ReviewListSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(movie=movie, user=user)
@@ -295,6 +264,7 @@ def review_detail_or_update_or_delete(request, review_pk):
         # user_pk = request.data['user'] # 5
         # User = get_user_model()
         # user = get_object_or_404(User, pk=user_pk) # test1
+
         user = request.user
         serializer = ReviewSerializer(review, data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -307,44 +277,3 @@ def review_detail_or_update_or_delete(request, review_pk):
             'message' : 'deleted',
         }
         return Response(data, status=status.HTTP_204_NO_CONTENT)   
-
-
-# # 댓글리스트 및 댓글작성
-# @api_view(['GET', 'POST'])
-# @permission_classes([AllowAny])
-# def comment_list_or_create(request, review_pk):
-
-#     if request.method == 'GET':
-#         comments = get_object_or_404(Comment)
-#         serializer = CommentSerializer(comments, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     elif request.method =='POST':
-#         review = get_object_or_404(Review, pk=review_pk)
-#         serializer = CommentSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(review=review)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# # 개별 댓글 보기 수정 삭제
-# @api_view(['GET', 'PUT', 'DELETE'])
-# @permission_classes([AllowAny])
-# def comment_detail_or_update_or_delete(request, review_pk):
-#     review = get_object_or_404(Comment, pk=review_pk)
-#     if request.method == 'GET':
-#         serializer = CommentSerializer(review)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     elif request.method == 'PUT':
-#         serializer = CommentSerializer(review, data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(review=review)
-#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-    
-#     elif request.method == 'DELETE':
-#         review.comment.delete()
-#         data = {
-#             'message' : 'deleted',
-#         }
-#         return Response(data, status=status.HTTP_204_NO_CONTENT)
