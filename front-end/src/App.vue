@@ -5,10 +5,10 @@
       <div id="nav" class="nav">
         <div class="nav-item search d-flex">
           <input
-            @keyup.enter="search"
+            @keydown.enter="search"
             @keyup="searchInputChange"
             :value="searchInput"
-            class="form-control me-2" type="text" placeholder="영화제목을 입력해보세요">
+            class="form-control me-2 d-block" type="text" placeholder="영화제목을 입력해보세요">
           <router-link :to="{ name: 'Search' }">
             <img @click="search" src="@/assets/Search.svg" alt="search" class="icon">
           </router-link>
@@ -52,6 +52,7 @@ export default({
     },
     search() {
       this.$store.dispatch('search', this.searchInput)
+      this.$router.push({ name: 'Search'})
     },
     toMyProfile() {
       this.$router.push({ name: 'Profile', params: { personname: this.username }})
