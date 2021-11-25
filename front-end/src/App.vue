@@ -19,7 +19,7 @@
           <router-link :to="{ name: 'Login' }" class="btn btn-outline">로그인</router-link>
         </div>
         <div v-else class="nav-item">
-          <router-link :to="{ name: 'MyProfile'}" class="btn btn-primary me-2">내 프로필</router-link>
+          <a href="#" @click="toMyProfile">내 프로필</a>
           <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
         </div>
       </div>

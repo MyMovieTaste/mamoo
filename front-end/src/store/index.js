@@ -270,11 +270,12 @@ export default new Vuex.Store({
     },
     search({commit}, input) {
       axios({
-        method: 'post',
+        method: 'get',
         url: 'http://127.0.0.1:8000/movies/search/',
-        data: { keyword: input }
+        params: { keyword: input }
       })
         .then(res => {
+          console.log(res)
           commit('SEARCH', res.data)
         })
         .catch(() => {
