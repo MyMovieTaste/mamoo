@@ -123,7 +123,6 @@ export default {
     reviewSubmit() {
       const review = {
         content: this.reviewInput,
-        movie_title: this.movieDetail.title,
         rank: this.rate,
       }
       this.setToken()
@@ -137,13 +136,18 @@ export default {
           this.$store.dispatch('getReviews', this.movieDetail.id)
           this.$store.dispatch('resetReviewInput')
         })
+        // 로그인 안했을때
+        // 역시 에러 구분하는거 어떻게 하는지 잘 모르겠다
+        .catch(err => {
+          console.log(err)
+          alert('리뷰를 남기려면 로그인해주세요.')
+        })
     },
     setToken() {
       this.$store.dispatch('setToken')
     },
     bookmark() {
-
-      // this.$store.dispatch('')
+      this.$store.dispatch('bookmark', this.movieDetail.id)
     }
   },
   computed: {
@@ -166,6 +170,20 @@ export default {
       const IMG_URL = 'https://image.tmdb.org/t/p/w500'
       return `${IMG_URL}/${this.movieDetail.poster_path}`
     },    
+    userInfo() {
+      return this.$store.state.userInfo
+    },
+    isLoginAndIsBookmarked() {
+      if (this.isLogin) {
+        if (this.userInfo.bookmarked_movies.includes(this.movieDetail.id)) {
+          return 'isLoginisBookmarked'
+        } else {
+          return 'isLoginNotBookmarked'
+        }
+      } else {
+        return null
+      }
+    }
   },
   created: function() {
     if (this.isLogin) {

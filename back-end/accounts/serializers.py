@@ -29,3 +29,4 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('username', 'followings_count','followings','followers_count', 'followers','bookmarked_movies', 'id')
+

@@ -26,6 +26,9 @@ export default new Vuex.Store({
     revisingId: null,
     deleteConfirmation: false,
     searchList: [],
+    userInfo: [],
+    person: null,
+    searchInput: null,
   },
   mutations: {
     LOGIN(state) {
@@ -34,6 +37,9 @@ export default new Vuex.Store({
     GETUSERINFO(state, userInfo) {
       state.username = userInfo.username
       state.userId = userInfo.userId
+    },
+    GETUSERINFO2(state, userInfo) {
+      state.userInfo = userInfo
     },
     SETTOKEN(state) {
       const token = localStorage.getItem('jwt')
@@ -47,6 +53,7 @@ export default new Vuex.Store({
       localStorage.removeItem('jwt')
       state.username = null
       state.userId = null
+      state.userInfo = []
     },
     GETTHISYEARLIST(state, movies) {
       // state.thisYearList = [movies[0]]
@@ -99,6 +106,11 @@ export default new Vuex.Store({
     REVIEWREVISEINPUTCHANGE(state, value) {
       state.reviewReviseInput = value
     },
+    REVIEWREVISESUBMIT(state, reviewReviseInfo) {
+      // todo에서 했던 것처럼 forEach로 === id 하는게 더 빠를까 이게 빠를까
+      const idx = state.reviews.indexOf(reviewReviseInfo.review)
+      state.reviews[idx].content = state.reviewReviseInput
+    },
     DELETEREVIEW(state, review){
       state.deleteConfirmation = false
       const idx = state.reviews.indexOf(review)
@@ -113,6 +125,33 @@ export default new Vuex.Store({
     },
     SEARCH(state, movies){
       state.searchList = movies
+    },
+    BOOKMARK(state, movieId){
+      if (state.userInfo.bookmarked_movies.includes(movieId)) {
+        const idx = state.userInfo.bookmarked_movies.indexOf(movieId)
+        state.userInfo.bookmarked_movies.splice(idx, 1)
+      } else {
+        state.userInfo.bookmarked_movies.push(movieId)
+      }
+    },
+    GETPROFILE(state, person) {
+      state.person = person
+    },
+    FOLLOW(state) {
+      if (state.person.followers.includes(state.username)) {
+        const idx = state.person.followings.indexOf(state.username)
+        state.person.followers.splice(idx, 1)
+        state.person.followers_count -= 1
+      } else {
+        state.person.followers.push(state.username)
+        state.person.followers_count += 1
+      }
+    },
+    SEARCHINPUTCHANGE(state, value) {
+      state.searchInput = value
+      if (state.searchInput === '') {
+        state.searchInput = null
+      }
     }
   },
   actions: {
@@ -128,11 +167,11 @@ export default new Vuex.Store({
     getUserInfo({commit}, userInfo) {
       commit('GETUSERINFO', userInfo)
       axios({
-        method: 'post',
+        method: 'get',
         url: `http://127.0.0.1:8000/accounts/${userInfo.username}/`,
       })
         .then(res => {
-          console.log(res)
+          commit('GETUSERINFO2', res.data)
         })
     },
     getThisYearList({ commit }) {
@@ -206,12 +245,26 @@ export default new Vuex.Store({
     reviewReviseInputChange({commit}, value) {
       commit('REVIEWREVISEINPUTCHANGE', value)
     },
+    reviewReviseSubmit({commit}, reviewReviseInfo) {
+      axios({
+        method: 'put',
+        url: `http://127.0.0.1:8000/movies/reviews/${reviewReviseInfo.review.id}/`,
+        data: { rank: reviewReviseInfo.rate, content: reviewReviseInfo.content },
+        headers: this.state.token
+      })
+        .then(() => {
+          commit('REVIEWREVISESUBMIT', reviewReviseInfo)
+        })
+    },
     deleteReview({commit}, review) {
       axios({
         method: 'delete',
-        url: `http://127.0.0.1:8000/movies/reviews/${review.id}`,
+        url: `http://127.0.0.1:8000/movies/reviews/${review.id}/`,
+        headers: this.state.token
       })
-      commit('DELETEREVIEW', review)
+        .then(() => {
+          commit('DELETEREVIEW', review)
+        })
     },
     toggleDeleteConfirmation({commit}) {
       commit('TOGGLEDELETECONFIRMATION')
@@ -225,7 +278,45 @@ export default new Vuex.Store({
         .then(res => {
           commit('SEARCH', res.data)
         })
-        .catch(() => {})
+        .catch(() => {
+          alert('검색어를 입력하세요.')
+        })
+    },
+    bookmark({commit}, movieId) {
+      axios({
+        method: 'post',
+        url: `http://127.0.0.1:8000/movies/${movieId}/bookmarks/`,
+        headers: this.state.token
+      })
+        .then(() => {
+          commit('BOOKMARK', movieId)
+        })
+    },
+    getProfile({commit}, personname) {
+      axios({
+        method: 'get',
+        url: `http://127.0.0.1:8000/accounts/${personname}/`,
+      })
+        .then(res => {
+          commit('GETPROFILE', res.data)
+        })
+        .catch(err => {
+          alert(err)
+        })
+    },
+    follow({commit}, personInfo) {
+      axios({
+        method: 'post',
+        url: `http://127.0.0.1:8000/accounts/${personInfo.id}/follow/`,
+        // headers 잊지 말자!!!! 이거로 로그인한유저 정보 보내주는거!! 
+        headers: this.state.token
+      })
+        .then(() => {
+          commit('FOLLOW')
+        })
+    },
+    searchInputChange({commit}, value) {
+      commit('SEARCHINPUTCHANGE', value)
     }
   },
   getters: {

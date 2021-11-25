@@ -53,9 +53,7 @@ export default {
         .then(() => {
           this.$router.push({name: 'Login'})
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch(() => {})
     }
     // toSignupReview () {
     //   this.$router.push( { name: 'SignupReview' } )

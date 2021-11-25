@@ -14,7 +14,6 @@
           <router-link :to="{ name: 'Signup' }" class="btn btn-primary me-2">추천받기</router-link>
           <router-link :to="{ name: 'Login' }" class="btn btn-outline">로그인</router-link>
         </div>
-
         <div v-else class="nav-item">
           <router-link :to="{ name: 'MyProfile'}" class="btn btn-primary me-2">내 프로필</router-link>
           <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
@@ -39,8 +38,7 @@ export default({
   },
   data: function() {
     return {
-    //   isLogin: this.$store.isLogin
-      searchInput: null,
+      // isLogin: this.$store.isLogin
     }
   },
   methods: {
@@ -50,32 +48,26 @@ export default({
     },
     search() {
       this.$store.dispatch('search', this.searchInput)
-    }
-  },
-  updated: function() {
-    // 이것도 mutations에서 해야하나
-    if (localStorage.getItem('jwt')) {
-      const token = localStorage.getItem('jwt')
-      const decodedToken = jwt_decode(token)
-      const userInfo = {
-        username: decodedToken.username,
-        userId: decodedToken.user_id
-      }
-      this.$store.dispatch('login')
-      this.$store.dispatch('getUserInfo', userInfo)
-    } else {
-      this.$store.dispatch('logout')
+    },
+    toMyProfile() {
+      this.$router.push({ name: 'Profile', params: { personname: this.username }})
+    },
+    searchInputChange(event) {
+      this.$store.dispatch('searchInputChange', event.target.value)
     }
   },
   computed: {
     ...mapGetters([
       'isLogin'
-    ])
+    ]),
+    username() {
+      return this.$store.state.username
+    },
+    searchInput() {
+      return this.$store.state.searchInput
+    }
   },
   created: function () {
-    // mapGetters([
-    //   'isLogin'
-    // ])
     this.$store.dispatch('setToken')
     if (localStorage.getItem('jwt')) {
       const token = localStorage.getItem('jwt')
@@ -89,7 +81,8 @@ export default({
     } else {
       this.$store.dispatch('logout')
     }
-  }
+    console.log(this.username)
+  },
 })
 </script>
 
