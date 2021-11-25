@@ -95,5 +95,4 @@ h1 {
   -webkit-text-fill-color: transparent;
 }
 
-
 </style>

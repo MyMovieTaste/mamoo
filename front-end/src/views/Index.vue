@@ -13,6 +13,7 @@
         <top-list-by-year></top-list-by-year>
       </div>
     </div>
+
     <div class="modal" :class="{ 'showModal': isMovieDetail }">
       <div v-if="movieDetail" class="modal-dialog">
         <div class="modal-content">
@@ -21,35 +22,45 @@
               @click="toggleMovieDetail" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
             </button>
           </div>
-          <div class="modal-body d-flex">
-            <div class="me-5">
-              <img :src="posterPath"  alt="" class="card-img-top">
-            </div>
-            <div class="">
-            <div class="d-flex mt-3 justify-content-between">
-              <h1> {{ movieDetail.title }} </h1>
-              <div class="me-2">
-                <a href="#"
-                  v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
-                  @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
-                <a href="#"
-                  v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
-                  @click="bookmark"><img src="../assets/Bookmark_fill.svg" alt=""></a>
+          <div class="modal-body">
+            <!-- 영화정부부분 -->
+            <div class="d-flex justify-content-between">
+              <!-- 영화사진 -->
+              <div>
+                <div class="me-5">
+                  <img :src="posterPath"  alt="" class="card-img-top">
+                </div>
+              </div>
+              <!-- 영화설명 -->
+              <div>
+                <div class="d-flex mt-3">
+                  <h1> {{ movieDetail.title }} </h1>
+                  <div class="me-2">
+                    <a href="#"
+                      v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
+                      @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
+                    <a href="#"
+                      v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
+                      @click="bookmark"><img src="../assets/Bookmark_fill.svg" class="bookmark" alt=""></a>
+                  </div>
+                </div>
+                <div class="d-flex secondary mb-3 info">
+                  <p class="me-3">개봉연도  {{ movieDetail.year }}</p>
+                  <p>평균평점  {{ movieDetail.vote_average }}</p>
+                </div>
+                <div>
+                  <p class="mb-5">{{ movieDetail.overview }}</p>
+                </div>
               </div>
             </div>
-            <div class="d-flex secondary mb-3 info">
-              <p class="me-3">개봉연도  {{ movieDetail.year }}</p>
-              <p>평균평점  {{ movieDetail.vote_average }}</p>
-            </div>
-            <div>
-
-              <p class="mb-5">{{ movieDetail.overview }}</p>
-            </div>
-            <div class="d-flex flex-column">
+              
+            <div class="row mt-5">
               <h4 class="mb-3">리뷰남기기</h4>
               <!-- v-model로 하는게 맞나 -->
-              <div class="mb-2 row">
-                <label for="inputPassword" class="col-3 col-form-label">평점</label>
+              <div class="mb-2 d-flex">
+                <div class="col-3">
+                  <label for="inputPassword" class=" col-form-label">평점</label>
+                </div>
                 <div class="col-9">
                   <select class="form-select" v-model="rate" name="rank" id="rate" aria-label="Default select example">
                     <option selected>이 영화 어떠셨나요?</option>
@@ -60,21 +71,23 @@
                     <option value="1">★</option>
                   </select>
                 </div>
-              </div>
-              <div class="form-floating">
-                <textarea class="form-control mt-2" placeholder="리뷰를 남겨보세요" id="floatingTextarea"
-                  :value="reviewInput"
-                  @keyup="reviewInputChange"
-                ></textarea>
-                <label for="floatingTextarea">Comments</label>
-              </div>
-              <div class="d-flex justify-content-end">
-                <button @click="reviewSubmit" type="button" class="btn btn-primary mt-3">리뷰작성</button>
-              </div>
+                </div>
+                <div class="form-floating">
+                  <textarea class="form-control mt-2" placeholder="리뷰를 남겨보세요" id="floatingTextarea"
+                    :value="reviewInput"
+                    @keyup="reviewInputChange"
+                  ></textarea>
+                  <label for="floatingTextarea">Comments</label>
+                </div>
+              
+                <div class="d-flex justify-content-end">
+                  <button @click="reviewSubmit" type="button" class="btn btn-primary mt-3">리뷰작성</button>
+                </div>
+ 
             </div>
 
             <hr>
-            <div>
+            <div class="">
               <h4>리뷰게시판</h4>
               <review
                 v-for="review in reviews"
@@ -90,8 +103,6 @@
           </div>
         </div>
       </div>
-    </div>
-
   </div>
 </template>
 
