@@ -42,7 +42,7 @@ export default {
         data: this.credentials,
       })
         .then(res => {
-          localStorage.setItem('jwt', res.data.token)
+          sessionStorage.setItem('jwt', res.data.token)
           this.$store.dispatch('login')
           this.$router.push({ name: 'Index' })
         })
@@ -54,6 +54,9 @@ export default {
     }
   },
 
+  // mounted는 로그인 성공 시 실행 안됨
+  // destroyed는 Index.vue created보다 느림 왜지 (beforeDestory도 마찬가지..)
+  
   directives: {
     focus: {
       // 디렉티브 정의

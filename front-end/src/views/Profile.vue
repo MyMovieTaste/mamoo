@@ -58,6 +58,7 @@ export default {
   },
   created: function () {
     this.$store.dispatch('getProfile', this.$route.params.personname)
+    console.log(this.$store.state.username)
   }
 }
 </script>

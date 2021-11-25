@@ -60,12 +60,12 @@ export default({
     },
     searchInput() {
       return this.$store.state.searchInput
-    }
+    },
   },
-  created: function () {
+  updated: function () {
     this.$store.dispatch('setToken')
-    if (localStorage.getItem('jwt')) {
-      const token = localStorage.getItem('jwt')
+    if (sessionStorage.getItem('jwt')) {
+      const token = sessionStorage.getItem('jwt')
       const decodedToken = jwt_decode(token)
       const userInfo = {
         username: decodedToken.username,
@@ -76,8 +76,8 @@ export default({
     } else {
       this.$store.dispatch('logout')
     }
-    console.log(this.username)
   },
+  
 })
 </script>
 

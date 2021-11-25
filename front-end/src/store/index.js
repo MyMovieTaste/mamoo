@@ -42,7 +42,7 @@ export default new Vuex.Store({
       state.userInfo = userInfo
     },
     SETTOKEN(state) {
-      const token = localStorage.getItem('jwt')
+      const token = sessionStorage.getItem('jwt')
       const headers = {
         Authorization: `JWT ${token}`
       }
@@ -50,13 +50,13 @@ export default new Vuex.Store({
     },
     LOGOUT(state) {
       state.isLogin = false
-      localStorage.removeItem('jwt')
+      sessionStorage.removeItem('jwt')
       state.username = null
       state.userId = null
       state.userInfo = []
     },
     GETTHISYEARLIST(state, movies) {
-      state.thisYearList = [movies[0]]
+      state.thisYearList = movies
     },
     TOGGLEMOVIEDETAIL(state) {
       if (state.isMovieDetail) {

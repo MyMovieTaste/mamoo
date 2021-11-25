@@ -26,8 +26,9 @@
                   v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
                   @click="bookmark">소장됨</button>
               </h4>
+
             </div>
-            {{ movieDetail }}
+            <img :src="posterPath" alt="">
             <p>{{ movieDetail.year }}</p>
             <p>평점: {{ movieDetail.vote_average }}</p>
             <!-- v-model로 하는게 맞나 -->
@@ -70,6 +71,8 @@ import ThisYearListByGenre from '@/components/ThisYearListByGenre.vue'
 import axios from 'axios'
 import Review from '@/components/Review.vue'
 import TopListByYear from '@/components/TopListByYear.vue'
+import jwt_decode from 'jwt-decode'
+
 
 export default {
   name: 'Index',
@@ -152,9 +155,27 @@ export default {
       } else {
         return null
       }
+    },
+    posterPath() {
+      const IMG_URL = 'https://image.tmdb.org/t/p/w500'
+      return `${IMG_URL}/${this.movieDetail.poster_path}`
     }
   },
   created: function() {
+    this.$store.dispatch('setToken')
+    if (sessionStorage.getItem('jwt')) {
+      const token = sessionStorage.getItem('jwt')
+      const decodedToken = jwt_decode(token)
+      const userInfo = {
+        username: decodedToken.username,
+        userId: decodedToken.user_id
+      }
+      this.$store.dispatch('login')
+      this.$store.dispatch('getUserInfo', userInfo)
+    } else {
+      this.$store.dispatch('logout')
+    }
+    console.log('Index.vue: token=',this.$store.state.token)
     if (this.isLogin) {
       this.$store.dispatch('getMyRecommendList')
     }
