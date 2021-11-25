@@ -49,7 +49,8 @@ export default new Vuex.Store({
       state.userId = null
     },
     GETTHISYEARLIST(state, movies) {
-      state.thisYearList = [movies[0]]
+      // state.thisYearList = [movies[0]]
+      state.thisYearList = movies
     },
     TOGGLEMOVIEDETAIL(state) {
       if (state.isMovieDetail) {

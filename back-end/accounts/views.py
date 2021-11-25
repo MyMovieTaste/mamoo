@@ -11,6 +11,10 @@ from django.contrib.auth import get_user_model
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def profile(request, username):
+    # token 받기 전 
+    # user_pk = request.data['user'] # 5
+    # User = get_user_model()
+    # user = get_object_or_404(User, pk=user_pk) # test1
     User = get_user_model()
     profile_user = User.objects.get(username=username) 
     serializer = ProfileSerializer(profile_user) # object로 넣어야
