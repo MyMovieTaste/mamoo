@@ -1,61 +1,93 @@
 <template>
   <!-- esc이거 왜 제대로 작동을 안할까 -->
   <div @keyup.esc="toggleMovieDetail">
-    <recommend-list v-if="!isLogin"></recommend-list>
-    <my-recommend-list v-else></my-recommend-list>
-    <this-year-list-by-genre></this-year-list-by-genre>
-    <top-list-by-year></top-list-by-year>
-
-    <div class="modal" :class="{ 'showModal': isMovieDetail}">
+    <div class="d-flex flex-column">
+      <div class="mb-3">
+        <recommend-list v-if="!isLogin"></recommend-list>
+        <my-recommend-list v-else></my-recommend-list>
+      </div>
+      <div class="mb-3">
+        <this-year-list-by-genre></this-year-list-by-genre>
+      </div>
+      <div class="mb-3">
+        <top-list-by-year></top-list-by-year>
+      </div>
+    </div>
+    <div class="modal" :class="{ 'showModal': isMovieDetail }">
       <div v-if="movieDetail" class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
             <button 
-              @click="toggleMovieDetail"
-              type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              @click="toggleMovieDetail" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
           </div>
-          <div class="modal-body">
-            <img src="" alt="">
-            <div>
-              <h4>{{ movieDetail.title }}
-                <button 
-                  v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
-                  @click="bookmark">소장하기</button>
-                <button
-                  v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
-                  @click="bookmark">소장됨</button>
-              </h4>
-
+          <div class="modal-body d-flex">
+            <div class="me-5">
+              <img :src="posterPath"  alt="" class="card-img-top">
             </div>
-            <img :src="posterPath" alt="">
-            <p>{{ movieDetail.year }}</p>
-            <p>평점: {{ movieDetail.vote_average }}</p>
-            <!-- v-model로 하는게 맞나 -->
-            <select v-model="rate" name="rank" id="rate">
-              <option value="5">★★★★★</option>
-              <option value="4">★★★★</option>
-              <option value="3">★★★</option>
-              <option value="2">★★</option>
-              <option value="1">★</option>
-            </select>
-            <textarea 
-              :value="reviewInput"
-              @keyup="reviewInputChange"
-            ></textarea>
-            <button @click="reviewSubmit">작성</button>
+            <div class="">
+            <div class="d-flex mt-3 justify-content-between">
+              <h1> {{ movieDetail.title }} </h1>
+              <div class="me-2">
+                <a href="#"
+                  v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
+                  @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
+                <a href="#"
+                  v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
+                  @click="bookmark"><img src="../assets/Bookmark_fill.svg" alt=""></a>
+              </div>
+            </div>
+            <div class="d-flex secondary mb-3 info">
+              <p class="me-3">개봉연도  {{ movieDetail.year }}</p>
+              <p>평균평점  {{ movieDetail.vote_average }}</p>
+            </div>
+            <div>
+
+              <p class="mb-5">{{ movieDetail.overview }}</p>
+            </div>
+            <div class="d-flex flex-column">
+              <h4 class="mb-3">리뷰남기기</h4>
+              <!-- v-model로 하는게 맞나 -->
+              <div class="mb-2 row">
+                <label for="inputPassword" class="col-3 col-form-label">평점</label>
+                <div class="col-9">
+                  <select class="form-select" v-model="rate" name="rank" id="rate" aria-label="Default select example">
+                    <option selected>이 영화 어떠셨나요?</option>
+                    <option value="5">★★★★★</option>
+                    <option value="4">★★★★</option>
+                    <option value="3">★★★</option>
+                    <option value="2">★★</option>
+                    <option value="1">★</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control mt-2" placeholder="리뷰를 남겨보세요" id="floatingTextarea"
+                  :value="reviewInput"
+                  @keyup="reviewInputChange"
+                ></textarea>
+                <label for="floatingTextarea">Comments</label>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button @click="reviewSubmit" type="button" class="btn btn-primary mt-3">리뷰작성</button>
+              </div>
+            </div>
+
             <hr>
-            <h4>리뷰</h4>
-            <review
-              v-for="review in reviews"
-              :review="review"
-              :key="review.id"
-            ></review>
+            <div>
+              <h4>리뷰게시판</h4>
+              <review
+                v-for="review in reviews"
+                :review="review"
+                :key="review.id"
+              ></review>
+            </div>
+            <hr>
+          <div class="modal-footer">
+            <button @click="toggleMovieDetail" type="button" class="btn btn-outline">닫기</button>
           </div>
-          <!-- <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
-          </div> -->
+          </div>
+          </div>
         </div>
       </div>
     </div>
@@ -142,6 +174,10 @@ export default {
     reviews() {
       return this.$store.state.reviews
     },
+    posterPath() {
+      const IMG_URL = 'https://image.tmdb.org/t/p/w500'
+      return `${IMG_URL}/${this.movieDetail.poster_path}`
+    },    
     userInfo() {
       return this.$store.state.userInfo
     },
@@ -185,6 +221,49 @@ export default {
 }
 </script>
 
-<style>
-  .showModal {display: block;}
+
+<style lang="scss" scoped>
+@import '@/scss/main.scss';
+
+.info {
+  width: 350px;
+}
+
+.bookmark {
+  width: 2.5rem;
+}
+
+.modal-dialog {
+  max-width: 900px;
+}
+
+.card-img-top {
+  width: 400px;
+}
+
+.secondary {
+  color: $secondary;
+}
+
+.modal {
+  color: $gray-100;
+
+}
+.modal-content {
+  color: $gray-100;
+}
+.modal-body {
+ color: $gray-100;
+ padding: 0 2rem 0 2rem;
+}
+
+.modal-header{
+  border-bottom: none;
+}
+.showModal { display: block; }
+
+.btn-outline {
+  color: $primary;
+  border-color: $primary;
+}
 </style>

@@ -20,7 +20,6 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
             <button 
               @click="toggleDeleteConfirmation"
               type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -30,6 +29,7 @@
             <button @click="deleteReview">예</button>
             <button @click="toggleDeleteConfirmation">아니오</button>
           </div>
+
         </div>
       </div>
     </div>
@@ -145,6 +145,20 @@ export default {
 }
 </script>
 
-<style>
-  .showModal {display: block;}
+<style lang="scss" scoped>
+@import '@/scss/main.scss';
+.modal {
+  color: $gray-100;
+}
+.modal-content {
+  color: $gray-100;
+}
+.modal-body {
+ color: $gray-100;
+}
+
+.modal-header{
+  border-bottom: none;
+}
+.showModal { display: block; }
 </style>

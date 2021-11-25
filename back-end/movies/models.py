@@ -28,7 +28,7 @@ class Movie(models.Model):
     # 1:N
     year = models.ForeignKey(Year, on_delete=models.CASCADE, blank=True)
     # M:N
-    genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')
+    genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')  
     # 이 영화를 북마크 한 사람
     bookmarked_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="bookmarked_movies")
 

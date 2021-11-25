@@ -33,6 +33,13 @@ export default {
 }
 </script>
 
-<style>
+
+<style lang="scss" scoped>
+@import '@/scss/main.scss';
+h4 {
+  line-height: 1;
+  font-size: 30px;
+  color: $gray-100;
+}
 
 </style>

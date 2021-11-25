@@ -1,36 +1,41 @@
 <template>
-  <div id="app">
-    <div>
-      <div id="nav" class="d-flex justify-content-between">
-        <router-link :to="{ name: 'Index' }">Home</router-link>
-        <div>
-          <input @keyup.enter="search"
-            @keyup="searchInputChange"
-            :value="searchInput" type="text">
+<div id="app" class="bg">
+    <div class="header">
+      <logo></logo>
+      <div id="nav" class="nav">
+        <div class="nav-item search d-flex">
+          <input class="form-control me-2" v-model="searchInput" type="text" placeholder="영화제목을 입력해보세요">
           <router-link :to="{ name: 'Search' }">
-            <button @click="search">search</button>
+            <img @click="search" src="@/assets/Search.svg" alt="search" class="icon">
           </router-link>
         </div>
-        <div v-if="!isLogin">
-          <router-link :to="{ name: 'Signup' }">추천받기</router-link> |
-          <router-link :to="{ name: 'Login' }">로그인</router-link>
+
+        <div v-if="!isLogin" class="nav-item">
+          <router-link :to="{ name: 'Signup' }" class="btn btn-primary me-2">추천받기</router-link>
+          <router-link :to="{ name: 'Login' }" class="btn btn-outline">로그인</router-link>
         </div>
-        <div v-else>
-          <a href="#" @click="toMyProfile">내 프로필</a> | 
-          <router-link to="#" @click.native="logout">로그아웃</router-link>
+        <div v-else class="nav-item">
+          <router-link :to="{ name: 'MyProfile'}" class="btn btn-primary me-2">내 프로필</router-link>
+          <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
         </div>
       </div>
-      <router-view/>
-
     </div>
-  </div>
+    <div class="container">
+      <router-view/>
+    </div>
+
+  </div> 
 </template>
 
 <script>
 import jwt_decode from 'jwt-decode'
 import { mapGetters } from 'vuex'
+import Logo from '@/components/Logo.vue'
 
 export default({
+  components: {
+    Logo
+  },
   data: function() {
     return {
       // isLogin: this.$store.isLogin
@@ -82,25 +87,53 @@ export default({
 </script>
 
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<style lang="scss">
+@import '@/scss/main.scss';
+
+
+.container {
+  padding-top: 40px;
+  display:flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-#nav {
-  padding: 30px;
+.header {
+  display:flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 120px;
+  padding: 2rem;
+  .logo {
+    margin-right: 40px;
+  }
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.btn-outline {
+  color: $primary;
+  border-color: $primary;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.search {
+  margin-right: 1rem;
 }
+
+.bg {
+  background-color: #111;
+  background-image: url('./assets/bg-tp50.svg');
+  background-repeat: repeat;
+  background-size: 205%;
+  overflow: hidden;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.icon {
+  width: 2rem;
+}
+
+
 </style>

@@ -1,13 +1,17 @@
 <template>
   <div>
-    <h4>연도별 인기 영화</h4>
-    <select @change="yearSelected" name="" id="">
-      <option
-        v-for="i in numOfYears" 
-        :key="i"
-        :value=i-1>{{2021-i+1}}</option>
-    </select>
-    <div class="row row-cols-4">
+    <div class="d-flex mb-3">
+      <h4 class="mb-3">연도별 인기 영화</h4>
+      <div class="ms-3">
+        <select @change="yearSelected" class="form-select">
+          <option
+            v-for="i in numOfYears" 
+            :key="i"
+            :value=i-1>{{2021-i+1}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap">
       <top-list-item-by-year
         v-for="movie in topListByYear"
         :key="movie.id"
@@ -43,6 +47,27 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import '@/scss/main.scss';
+h4 {
+  line-height: 1;
+  font-size: 30px;
+  color: $gray-100;
+}
+
+.card-deck {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  @include clearfix();
+
+}
+.card {
+  background-color: $gray-900;
+  color: $gray-200; 
+  &:hover {
+    cursor: pointer;
+  }
+}
 
 </style>
