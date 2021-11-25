@@ -192,10 +192,6 @@ export default {
         return null
       }
     },
-    posterPath() {
-      const IMG_URL = 'https://image.tmdb.org/t/p/w500'
-      return `${IMG_URL}/${this.movieDetail.poster_path}`
-    }
   },
   created: function() {
     this.$store.dispatch('setToken')

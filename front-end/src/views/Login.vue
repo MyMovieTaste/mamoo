@@ -10,17 +10,11 @@
         class="form-control mb-3"
       >
       <input
+        @keyup.enter="login"
         type="password"
         placeholder="password"
         v-model="credentials.password"
         class="form-control mb-3"
-      >
-      <input
-        type="password"
-        placeholder="passwordConfirmation"
-        v-model="credentials.passwordConfirmation"
-        @keyup.enter="signup"
-        class="form-control mb-5"
       >
       <div class="row d-flex justify-content-center">
         <button @click="login" class="btn btn-primary col-4">로그인</button>

@@ -4,7 +4,11 @@
       <logo></logo>
       <div id="nav" class="nav">
         <div class="nav-item search d-flex">
-          <input class="form-control me-2" v-model="searchInput" type="text" placeholder="영화제목을 입력해보세요">
+          <input
+            @keyup.enter="search"
+            @keyup="searchInputChange"
+            :value="searchInput"
+            class="form-control me-2" type="text" placeholder="영화제목을 입력해보세요">
           <router-link :to="{ name: 'Search' }">
             <img @click="search" src="@/assets/Search.svg" alt="search" class="icon">
           </router-link>
@@ -15,7 +19,7 @@
           <router-link :to="{ name: 'Login' }" class="btn btn-outline">로그인</router-link>
         </div>
         <div v-else class="nav-item">
-          <router-link :to="{ name: 'MyProfile'}" class="btn btn-primary me-2">내 프로필</router-link>
+          <a href="#" @click="toMyProfile">내 프로필</a>
           <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
         </div>
       </div>

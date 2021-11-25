@@ -27,7 +27,8 @@ def create_year_table(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search(request):
-    keyword = request.data['keyword']
+    print('request.GET:' ,request.GET)
+    keyword = request.GET['keyword']
     result = Movie.objects.filter(title__contains=keyword)
     serializer = MovieSearchSerializer(result, many=True)
     return Response(serializer.data)
@@ -209,10 +210,10 @@ def genre_list(request):
 @permission_classes([AllowAny])
 def bookmarks(request, movie_pk):
     # token 받기 전 
-    user_pk = request.data['user'] # 5
-    User = get_user_model()
-    user = get_object_or_404(User, pk=user_pk) # test1
-    # user = request.user
+    # user_pk = request.data['user'] # 5
+    # User = get_user_model()
+    # user = get_object_or_404(User, pk=user_pk) # test1
+    user = request.user
     movie = get_object_or_404(Movie, pk=movie_pk)
     if user not in movie.bookmarked_users.all():
         user.bookmarked_movies.add(movie)
