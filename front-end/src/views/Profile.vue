@@ -17,9 +17,9 @@
       @click="follow">언팔로우</button>
     <p>bookmarked:</p>
     <bookmarked-item
-      v-for="movieId in personInfo.bookmarked_movies"
-      :key="movieId"
-      :movieId="movieId"
+      v-for="movie in personInfo.bookmarked_movies"
+      :key="movie.id"
+      :movie="movie"
     ></bookmarked-item>
   </div>
 </div>
@@ -27,9 +27,10 @@
 
 <script>
 import BookmarkedItem from '@/components/BookmarkedItem.vue'
+import jwt_decode from 'jwt-decode'
 
 export default {
-  name: 'MyProfile',
+  name: 'Profile',
   components: {
     BookmarkedItem,
   },
@@ -64,7 +65,19 @@ export default {
   },
   created: function () {
     this.$store.dispatch('getProfile', this.$route.params.personname)
-    console.log(this.$store.state.username)
+    this.$store.dispatch('setToken')
+    if (sessionStorage.getItem('jwt')) {
+      const token = sessionStorage.getItem('jwt')
+      const decodedToken = jwt_decode(token)
+      const userInfo = {
+        username: decodedToken.username,
+        userId: decodedToken.user_id
+      }
+      this.$store.dispatch('login')
+      this.$store.dispatch('getUserInfo', userInfo)
+    } else {
+      this.$store.dispatch('logout')
+    }
   }
 }
 </script>

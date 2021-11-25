@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <!-- 영화정부부분 -->
+            <!-- 영화정보부분 -->
             <div class="d-flex justify-content-between">
               <!-- 영화사진 -->
               <div>
@@ -37,10 +37,10 @@
                   <h1> {{ movieDetail.title }} </h1>
                   <div class="me-2">
                     <a href="#"
-                      v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
+                      v-show="!isBookmarked"
                       @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
                     <a href="#"
-                      v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
+                      v-show="isBookmarked"
                       @click="bookmark"><img src="../assets/Bookmark_fill.svg" class="bookmark" alt=""></a>
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     toggleMovieDetail () {
-        this.$store.dispatch('toggleMovieDetail')
+      this.$store.dispatch('toggleMovieDetail')
     },
     reviewInputChange(event) {
       this.$store.dispatch('reviewInputChange', event.target.value)
@@ -166,7 +166,11 @@ export default {
       this.$store.dispatch('setToken')
     },
     bookmark() {
-      this.$store.dispatch('bookmark', this.movieDetail.id)
+      if (this.isLogin) {
+        this.$store.dispatch('bookmark', this.movieDetail.id)
+      } else {
+        alert('북마크하려면 로그인해주세요!')
+      }
     }
   },
   computed: {
@@ -193,16 +197,22 @@ export default {
       return this.$store.state.userInfo
     },
     isLoginAndIsBookmarked() {
-      if (this.isLogin) {
-        if (this.userInfo.bookmarked_movies.includes(this.movieDetail.id)) {
-          return 'isLoginisBookmarked'
-        } else {
-          return 'isLoginNotBookmarked'
-        }
-      } else {
-        return null
-      }
+      return true
     },
+    // isBookmarked() {
+    //   if (this.movieDetail) {
+    //     if (this.movieDetail.bookmarked_users.includes(this.userInfo.id)) {
+    //       return true
+    //     } else {
+    //       return false
+    //     }
+    //   } else {
+    //     return false
+    //   }
+    // }
+    isBookmarked() {
+      return this.$store.state.isBookmarked
+    }
   },
   created: function() {
     this.$store.dispatch('setToken')
@@ -218,19 +228,27 @@ export default {
     } else {
       this.$store.dispatch('logout')
     }
-    console.log('Index.vue: token=',this.$store.state.token)
     if (this.isLogin) {
       this.$store.dispatch('getMyRecommendList')
     }
     this.$store.dispatch('getThisYearList')
     this.$store.dispatch('getTopListByYear')
-  }
+    // if (this.userInfo.bookmarked_movies) {
+    //   this.$store.dispatch('bookmarkedId', this.userInfo.bookmarked_movies)
+    // }
+    // 새로고침하면 안떠 ㅋㅋㅋㅋ 뭔데 ㅋㅋ 하
+    // console.log(this.userInfo.bookmarked_movies)
+  },
 }
 </script>
 
 
 <style lang="scss" scoped>
 @import '@/scss/main.scss';
+
+.not-bookmarked {
+  display: none;
+}
 
 .info {
   width: 350px;

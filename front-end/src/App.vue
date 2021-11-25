@@ -19,6 +19,8 @@
           <router-link :to="{ name: 'Login' }" class="btn btn-outline">로그인</router-link>
         </div>
         <div v-else class="nav-item">
+          <!-- 이렇게 하면 왜 계속 장고서버가 반응하는데 computed가 발생하는건가 왜지 -->
+          <!-- <router-link :to="`/profile/${userInfo.username}`" class="btn btn-primary me-2">내 프로필</router-link> -->
           <a href="#" @click="toMyProfile" class="btn btn-primary me-2">내 프로필</a>
           <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
         </div>
@@ -67,6 +69,9 @@ export default({
     ]),
     username() {
       return this.$store.state.username
+    },
+    userInfo() {
+      return this.$store.state.userInfo
     },
     searchInput() {
       return this.$store.state.searchInput

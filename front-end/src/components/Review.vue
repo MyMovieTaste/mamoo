@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="list-group">
+    <div v-if="!(revisingId === review.id)" class="list-group">
       <div class="list-group-item">
         <div class="">
-          <span v-if="!(revisingId === review.id)">
+          <span>
             <span>작성자 {{ review.user }}</span>
             <span class="ms-2">평점 {{ rate }}</span> 
           </span>
         </div>
-            <div class="mt-2">{{ review.content }}</div>
+        <div class="mt-2">{{ review.content }}</div>
       </div>
-    <!-- 수정을 동시에 여러개 하지 않는다 가정. 근데 동시 여러개 수정하게 가능할듯? -->
     </div>
+    <!-- 수정을 동시에 여러개 하지 않는다 가정. 근데 동시 여러개 수정하게 가능할듯? -->
     <div>
       <div class="mt-2 mb-2 d-flex justify-content-end">
         <button

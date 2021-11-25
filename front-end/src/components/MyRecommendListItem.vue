@@ -55,12 +55,22 @@ export default {
     },
     getMovieDetail() {
       this.$store.dispatch('getMovieDetail', this.movie.id)
+      // 이걸 함으로써 computed: userInfo도 넣어줌 근데 안넣어줘도 작동을 잘함 왜지
+      const movieAndUser = {
+        movie: this.movie,
+        user: this.userInfo
+      }
+      this.$store.dispatch('getIsBookmarked', movieAndUser)
     },
     getReviews() {
-      const movieId = this.movie.id
-      this.$store.dispatch('getReviews', movieId)
+      this.$store.dispatch('getReviews', this.movie.id)
     }
   },
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo
+    },
+  }
 }
 </script>
 

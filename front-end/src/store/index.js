@@ -29,6 +29,8 @@ export default new Vuex.Store({
     userInfo: [],
     person: null,
     searchInput: null,
+    // bookmarkedId: []
+    isBookmarked: false,
   },
   mutations: {
     LOGIN(state) {
@@ -150,6 +152,26 @@ export default new Vuex.Store({
       state.searchInput = value
       if (state.searchInput === '') {
         state.searchInput = null
+      }
+    },
+    // BOOKMARKEDID(state, movies) {
+    //   movies.forEach(movie => {
+    //     state.bookmarkedId.push(movie.id)
+    //   })
+    // }
+    GETISBOOKMARKED(state, movieAndUser) {
+      console.log(movieAndUser)
+      if (movieAndUser.movie.bookmarked_users.includes(movieAndUser.user.id)) {
+        state.isBookmarked = true
+      } else {
+        state.isBookmarked = false
+      }
+    },
+    CHANGEBOOKMARKED(state) {
+      if (state.isBookmarked === true) {
+        state.isBookmarked = false
+      } else {
+        state.isBookmarked = true
       }
     }
   },
@@ -290,6 +312,7 @@ export default new Vuex.Store({
       })
         .then(() => {
           commit('BOOKMARK', movieId)
+          commit('CHANGEBOOKMARKED')
         })
     },
     getProfile({commit}, personname) {
@@ -317,6 +340,12 @@ export default new Vuex.Store({
     },
     searchInputChange({commit}, value) {
       commit('SEARCHINPUTCHANGE', value)
+    },
+    // bookmarkedId({commit}, movies) {
+    //   commit('BOOKMARKEDID', movies)
+    // }
+    getIsBookmarked({commit}, movieAndUser) {
+      commit('GETISBOOKMARKED', movieAndUser)
     }
   },
   getters: {

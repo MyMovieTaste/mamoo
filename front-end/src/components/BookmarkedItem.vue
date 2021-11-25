@@ -55,12 +55,21 @@ export default {
     },
     getMovieDetail() {
       this.$store.dispatch('getMovieDetail', this.movie.id)
+      const movieAndUser = {
+        movie: this.movie,
+        user: this.userInfo
+      }
+      this.$store.dispatch('getIsBookmarked', movieAndUser)
     },
     getReviews() {
-      const movieId = this.movie.id
-      this.$store.dispatch('getReviews', movieId)
+      this.$store.dispatch('getReviews', this.movie.id)
     }
   },
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo
+    },
+  }
 }
 </script>
 
