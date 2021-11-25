@@ -1,20 +1,31 @@
 <template>
   <div>
-    <span v-if="!(revisingId === review.id)">
-      <span>{{ review.user }}</span> | 
-      <span>{{ rate }}</span> | 
-      <span>{{ review.content }}</span>
-    </span>
+    <div class="list-group">
+      <div class="list-group-item">
+        <div class="">
+          <span v-if="!(revisingId === review.id)">
+            <span>작성자 {{ review.user }}</span>
+            <span class="ms-2">평점 {{ rate }}</span> 
+          </span>
+        </div>
+            <div class="mt-2">{{ review.content }}</div>
+      </div>
     <!-- 수정을 동시에 여러개 하지 않는다 가정. 근데 동시 여러개 수정하게 가능할듯? -->
-    <button
-      v-if="isOwnerAndIsRevising === 'isOwnerAndNotRevising'"
-      @click="toggleRevise"
-    >수정</button>
-    <button
-      v-if="isOwnerAndIsRevising === 'isOwnerAndNotRevising'"
-      @click="toggleDeleteConfirmation"
-    >삭제</button>
-
+    </div>
+    <div>
+      <div class="mt-2 mb-2 d-flex justify-content-end">
+        <button
+          v-if="isOwnerAndIsRevising === 'isOwnerAndNotRevising'"
+          @click="toggleRevise"
+          class="btn btn-outline me-1"
+        >수정</button>
+        <button
+          v-if="isOwnerAndIsRevising === 'isOwnerAndNotRevising'"
+          @click="toggleDeleteConfirmation"
+          class="btn btn-outline"
+        >삭제</button>
+      </div>
+    </div>
     <!-- 삭제확인 모달 -->
     <div class="modal" :class="{ 'showModal': deleteConfirmation }">
       <div class="modal-dialog">
@@ -147,6 +158,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/scss/main.scss';
+
+.btn-outline {
+  color: $primary;
+  border-color: $primary;
+}
+
 .modal {
   color: $gray-100;
 }
@@ -161,4 +178,8 @@ export default {
   border-bottom: none;
 }
 .showModal { display: block; }
+
+.info {
+  background-color: black;
+}
 </style>

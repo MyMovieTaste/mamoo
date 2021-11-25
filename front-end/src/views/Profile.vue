@@ -1,13 +1,15 @@
 <template>
   <div v-if="personInfo">
-    {{ personInfo }}
+    <!-- {{ personInfo }} -->
     <p>{{ personInfo.username }}</p>
     <span>팔로워: {{ personInfo.followers_count }}</span> | 
     <span>팔로잉: {{ personInfo.followings_count }}</span>
     <button 
+      class="btn btn-outline"
       v-if="isSelfAndIsFollowing === 'NotFollowing'"
       @click="follow">팔로우</button>
     <button
+      class="btn btn-primary"
       v-if="isSelfAndIsFollowing === 'isFollowing'"
       @click="follow">언팔로우</button>
     <p>bookmarked:</p>
@@ -63,6 +65,20 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import '@/scss/main.scss';
+.btn-primary{
+  color: $gray-100;
+  background-color: $primary;
+  
+}
+.secondary {
+  color: $secondary;
+}
+
+.btn-outline {
+  color: $primary;
+  border-color: $primary;
+}
 
 </style>
