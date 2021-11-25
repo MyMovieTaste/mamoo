@@ -29,8 +29,12 @@
             <div class="d-flex mt-3 justify-content-between">
               <h1> {{ movieDetail.title }} </h1>
               <div class="me-2">
-                <a href="#" @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
-                <!-- <a href="#" @click="bookmark"><img src="../assets/Bookmark_fill.svg" alt=""></a> -->
+                <a href="#"
+                  v-if="isLoginAndIsBookmarked === 'isLoginNotBookmarked'"
+                  @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
+                <a href="#"
+                  v-if="isLoginAndIsBookmarked === 'isLoginisBookmarked'"
+                  @click="bookmark"><img src="../assets/Bookmark_fill.svg" alt=""></a>
               </div>
             </div>
             <div class="d-flex secondary mb-3 info">
@@ -38,6 +42,7 @@
               <p>평균평점  {{ movieDetail.vote_average }}</p>
             </div>
             <div>
+
               <p class="mb-5">{{ movieDetail.overview }}</p>
             </div>
             <div class="d-flex flex-column">
@@ -67,6 +72,7 @@
                 <button @click="reviewSubmit" type="button" class="btn btn-primary mt-3">리뷰작성</button>
               </div>
             </div>
+
             <hr>
             <div>
               <h4>리뷰게시판</h4>
@@ -97,6 +103,8 @@ import ThisYearListByGenre from '@/components/ThisYearListByGenre.vue'
 import axios from 'axios'
 import Review from '@/components/Review.vue'
 import TopListByYear from '@/components/TopListByYear.vue'
+import jwt_decode from 'jwt-decode'
+
 
 export default {
   name: 'Index',
@@ -183,9 +191,27 @@ export default {
       } else {
         return null
       }
+    },
+    posterPath() {
+      const IMG_URL = 'https://image.tmdb.org/t/p/w500'
+      return `${IMG_URL}/${this.movieDetail.poster_path}`
     }
   },
   created: function() {
+    this.$store.dispatch('setToken')
+    if (sessionStorage.getItem('jwt')) {
+      const token = sessionStorage.getItem('jwt')
+      const decodedToken = jwt_decode(token)
+      const userInfo = {
+        username: decodedToken.username,
+        userId: decodedToken.user_id
+      }
+      this.$store.dispatch('login')
+      this.$store.dispatch('getUserInfo', userInfo)
+    } else {
+      this.$store.dispatch('logout')
+    }
+    console.log('Index.vue: token=',this.$store.state.token)
     if (this.isLogin) {
       this.$store.dispatch('getMyRecommendList')
     }

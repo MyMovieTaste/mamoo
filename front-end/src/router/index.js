@@ -12,9 +12,13 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/index',
+    path: '',
     name: 'Index',
-    component: Index
+    component: Index,
+    // beforeEnter: function(to, from, next) {
+
+    // }
+
   },
   {
     path: '/login',
@@ -53,5 +57,9 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+// routes.beforeEach((to, from, next) => {
+
+// })
 
 export default router
