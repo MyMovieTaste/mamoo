@@ -24,7 +24,7 @@ def create_year_table(request):
         Year.objects.bulk_create(batch, batch_size)
 
 # 검색기능 - 영화 제목으로 검색 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def search(request):
     keyword = request.data['keyword']
@@ -209,10 +209,10 @@ def genre_list(request):
 @permission_classes([AllowAny])
 def bookmarks(request, movie_pk):
     # token 받기 전 
-    # user_pk = request.data['user'] # 5
-    # User = get_user_model()
-    # user = get_object_or_404(User, pk=user_pk) # test1
-    user = request.user
+    user_pk = request.data['user'] # 5
+    User = get_user_model()
+    user = get_object_or_404(User, pk=user_pk) # test1
+    # user = request.user
     movie = get_object_or_404(Movie, pk=movie_pk)
     if user not in movie.bookmarked_users.all():
         user.bookmarked_movies.add(movie)
