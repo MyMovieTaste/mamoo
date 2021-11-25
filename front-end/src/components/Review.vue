@@ -47,22 +47,28 @@
     <!-- 여기까지 삭제확인 모달 -->
 
     <div v-if="revisingId === review.id">
-    <select v-model="reviseRate" name="rank" id="rate">
+    <select class="form-select" v-model="reviseRate" name="rank" id="rate">
       <option value="5">★★★★★</option>
       <option value="4">★★★★</option>
       <option value="3">★★★</option>
       <option value="2">★★</option>
       <option value="1">★</option>
     </select>
+    <div class="form-floating">
     <textarea 
+      class="form-control mt-2 pt-3"
       :value="reviewReviseInput"
       @keyup="reviewReviseInputChange"
     ></textarea>
-    <button @click="reviewReviseSubmit">작성</button>
-    <button
-      v-if="isOwnerAndIsRevising === 'isOwnerAndIsRevising'"
-      @click="toggleRevise"
-    >취소</button>
+    </div>
+    <div class="d-flex justify-content-end mt-2">
+      <button
+        class="btn btn-outline me-2"
+        v-if="isOwnerAndIsRevising === 'isOwnerAndIsRevising'"
+        @click="toggleRevise"
+      >취소</button>
+      <button class="btn btn-primary" @click="reviewReviseSubmit">작성</button>
+    </div>
     </div>
   </div>
 </template>

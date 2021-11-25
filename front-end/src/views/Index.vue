@@ -33,7 +33,7 @@
               </div>
               <!-- 영화설명 -->
               <div>
-                <div class="d-flex mt-3">
+                <div class="d-flex mt-3 justify-content-between">
                   <h1> {{ movieDetail.title }} </h1>
                   <div class="me-2">
                     <a href="#"
@@ -73,7 +73,7 @@
                 </div>
                 </div>
                 <div class="form-floating">
-                  <textarea class="form-control mt-2" placeholder="리뷰를 남겨보세요" id="floatingTextarea"
+                  <textarea class="form-control mt-2 pt-3" placeholder="리뷰를 남겨보세요" id="floatingTextarea"
                     :value="reviewInput"
                     @keyup="reviewInputChange"
                   ></textarea>

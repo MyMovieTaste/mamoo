@@ -1,15 +1,18 @@
 <template>
-  <div v-if="personInfo">
+<div class="pf f-white">
+  <div v-if="personInfo" class="d-flex flex-column align-items-center">
     <!-- {{ personInfo }} -->
-    <p>{{ personInfo.username }}</p>
-    <span>팔로워: {{ personInfo.followers_count }}</span> | 
-    <span>팔로잉: {{ personInfo.followings_count }}</span>
+    <h1>{{ personInfo.username }} 님 환영합니다!</h1>
+    <div class="d-flex mt-4">
+      <h5 class="secondary me-3">팔로워 {{ personInfo.followers_count }} 명</h5>
+      <h5 class="secondary"> 팔로잉 {{ personInfo.followings_count }} 명</h5>
+    </div>
     <button 
-      class="btn btn-outline"
+      class="btn btn-primary mt-3"
       v-if="isSelfAndIsFollowing === 'NotFollowing'"
       @click="follow">팔로우</button>
     <button
-      class="btn btn-primary"
+      class="btn btn-outline mt-3"
       v-if="isSelfAndIsFollowing === 'isFollowing'"
       @click="follow">언팔로우</button>
     <p>bookmarked:</p>
@@ -19,6 +22,7 @@
       :movieId="movieId"
     ></bookmarked-item>
   </div>
+</div>
 </template>
 
 <script>
@@ -67,6 +71,18 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/scss/main.scss';
+.secondary {
+  color: $secondary;
+}
+
+.pf {
+  margin:0 auto;
+
+}
+.f-white {
+  color: $gray-100;
+}
+
 .btn-primary{
   color: $gray-100;
   background-color: $primary;
