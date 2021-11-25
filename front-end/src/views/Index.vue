@@ -256,9 +256,12 @@ export default {
   color: $gray-100;
 
 }
+
 .modal-content {
   color: $gray-100;
+  background-color: $gray-900;
 }
+
 .modal-body {
  color: $gray-100;
  padding: 0 2rem 0 2rem;
