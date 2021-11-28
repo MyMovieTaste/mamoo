@@ -47,6 +47,8 @@ $ npm run serve
 ```bash
 # 경로이동
 $ cd backend/
+# pip 인스톨
+$ pip install -r requirements.txt
 # 가상환경 실행
 $ source venv/bin/activate
 ```
@@ -76,7 +78,7 @@ python manage.py runserver
 
 ### 데이터베이스 모델링 (ERD)
 
-![img](https://lh5.googleusercontent.com/kfJ-6f1E8xk-G0uL-ek9vrMLV46Lx_U2ht_TfkdjkZEu9xAv6ERWqqszGTmPN60Im0dtpWrGqcVbTfs4gSiaq4PDA74cCyqLCzWEoamXMbkAOituYyqx12iJe4oUookrEZrr-CjQmsyN)
+![image-20211128114914018](README.assets/erd.png)
 
 ---
 
