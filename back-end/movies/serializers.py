@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from rest_framework import serializers
 from .models import Genre, Movie, Review, Year
 from django.contrib.auth import get_user_model
@@ -48,8 +49,11 @@ class RecentMovieByGenreListSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'movies_by_genre',)
 
     def get_movies_by_genre(self, obj):
+        
         movies = Movie.objects.all().order_by('-release_date')
-        return movies.filter(genre_ids=obj.id).values() # 입력받은 아이디와 일치여부 확인,.values()를 붙여야
+        movies = movies.filter(genre_ids=obj.id)
+        return MovieListSerializer(movies, many=True).data 
+        # return movies.filter(genre_ids=obj.id).values() => M:N(bookmarked_user) 이 출력되지 않음.
 
 # 연도별 평균별점순 영화
 class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
@@ -60,8 +64,11 @@ class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
         fields = ('id','movies_by_year',)
 
     def get_movies_by_year(self, obj):
+
         movies = Movie.objects.all().order_by('-vote_average')
-        return movies.filter(year_id=obj.id).values()
+        movies = movies.filter(year_id=obj.id)
+        return MovieListSerializer(movies, many=True).data
+        # return movies.filter(year_id=obj.id).values() => M:N(bookmarked_user) 이 출력되지 않음.
 
 # 장르 리스트
 class GenreListSerializer(serializers.ModelSerializer):
