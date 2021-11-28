@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex mb-3">
-      <h4 class="mb-3">올해 박스오피스 순위</h4>
+      <h4 class="mb-3">장르별 최신 개봉영화</h4>
       <div class="ms-3">
         <select @change="genreSelected" class="form-select">
           <option value=16>가족</option>
