@@ -2,7 +2,7 @@
 
  같은 취향 영화추천 사이트
 
-![image-20211128103826029](README.assets/intro.png)
+![image-20211128113804547](README.assets/intro.png)
 
 
 
