@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .models import Movie, Genre, Review, Year
-from .serializers import MovieSearchSerializer, MovieListSerializer, MovieSerializer, ReviewListSerializer, BestVoteMovieByYearListSerializer, RecommendMovieSerializer, GenreListSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
+from .serializers import MovieSearchSerializer, MovieListSerializer, MovieSerializer, ReviewListSerializer, BestVoteMovieByYearListSerializer, RecommendMovieSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
 from django.shortcuts import get_object_or_404, get_list_or_404
 from collections import Counter
 from itertools import islice
