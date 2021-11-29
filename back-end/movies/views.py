@@ -11,10 +11,10 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, get_user_model
 from django.http.response import JsonResponse
 
 
-# 연도테이블생성
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def create_year_table(request):
+    """연도테이블을 생성하는 함수"""
     batch_size = 10
     objs = (Year(id=year) for year in range(1950, 2022))
     while True:
@@ -23,60 +23,58 @@ def create_year_table(request):
             break
         Year.objects.bulk_create(batch, batch_size)
 
-# 검색기능 - 영화 제목으로 검색 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search(request):
+    """영화를 제목으로 검색하는 함수"""
     print('request.GET:' ,request.GET)
     keyword = request.GET['keyword']
     result = Movie.objects.filter(title__contains=keyword)
     serializer = MovieSearchSerializer(result, many=True)
     return Response(serializer.data)
 
-# 영화 리스트
+
 @api_view(['GET'])
 @permission_classes([AllowAny]) # 테스트 시에만 사용
 def movie_list(request):
+    """영화리스트 정보를 반환하는 함수"""
     movies = get_list_or_404(Movie)
     serializer = MovieListSerializer(movies, many=True)
     return Response(serializer.data)
 
-# 최신 개봉일 순 > 장르별 (장르별 최신 개봉영화)
+
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
 def recent_movie_by_genre(request):
+    """장르별 최신 개봉 영화"""
     genres = Genre.objects.all()
     serializer = RecentMovieByGenreListSerializer(genres, many=True)
     return Response(serializer.data)
 
-# 평균 별점 높은 순 > 연도별 (연도별 평균 별점 순위)
 @api_view(['GET'])
 @permission_classes([AllowAny]) 
 def best_vote_movie_by_year(request):
+    """연도별 평균 별점순 영화"""
     # years = get_list_or_404(Year) # order_by 사용불가
     years = Year.objects.all().order_by('-id')
     serializer = BestVoteMovieByYearListSerializer(years, many=True)
     return Response(serializer.data)
 
-# 영화 상세정보
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_details(request, movie_pk):
+    """영화 상세 정보"""
     movie = get_object_or_404(Movie, pk=movie_pk)
     serializers = MovieSerializer(movie)
     return Response(serializers.data)
 
-# 영화 추천
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def movie_recommend(request):
-    # token 받기 전 
-    # user_pk = request.data['user'] # 5
-    # User = get_user_model()
-    # user = get_object_or_404(User, pk=user_pk) # test1
-    # token 받은 후
+    """영화 추천"""
     user = request.user
-
     user = getattr(user, 'id')
     user_reviews = Review.objects.all().filter(user=user)
     
@@ -168,53 +166,17 @@ def movie_mypick_genre_ratio(request):
 
     for genre_id, cnt in genre_ratio_movie_list_gte4.items():
         genre_ratio_movie_list_gte4[genre_id] = round(cnt / total * 100, 1)
-
-    # 4-6 제외
-    # 4. 특정 사용자가 4점 이상 준 영화와 같은 영화의 리뷰를 남긴 다른 유저를 찾는다. 
-    # 5. 다른 유저의 리스트에서 높은 평점 중 내가 쓴 리뷰와 겹치지 않는 영화를 추천한다.
-    # 6. 추천영화 리스트에서 해당 장르 갯수대로 하나씩 뽑는다. 
-    # result = []
-    # for genre_id, cnt in genre_ratio_movie_list_gte4.items(): # 12,1  28,1  878,1
-    #     c = 0
-    #     for i in range(len(recommend_movies)):
-    #         movie = Movie.objects.get(id=recommend_movies[i])
-    #         if genre_id in movie.genre_ids:
-    #             result.append(movie)
-    #             recommend_movies.pop(i)
-    #             c += 1
-    #             if c == cnt:
-    #                 break
-    #         else:
-    #             # 동일 장르이면서 평점(vote_average)가 높은 영화
-    #             alt = Movie.objects.filter(genre_ids__contains=genre_id).order_by('-vote_average')
-    #             result.append(alt)
-    #             c += 1
-    #             if c == cnt:
-    #                 break
-
-    # serializers = RecommendMovieSerializer(genre_ratio_movie_list_gte4, many=True)
+        
     return Response(genre_ratio_movie_list_gte4)
 
 
-# 장르 리스트
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def genre_list(request):
-    genrelist = list(Genre.objects.all())
-    serializers = GenreListSerializer(genrelist, many=True)
-    return Response(serializers.data)
-
-
-# 북마크
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def bookmarks(request, movie_pk):
-    # token 받기 전 
-    # user_pk = request.data['user'] # 5
-    # User = get_user_model()
-    # user = get_object_or_404(User, pk=user_pk) # test1
+    """북마크 기능"""
     user = request.user
     movie = get_object_or_404(Movie, pk=movie_pk)
+
     if user not in movie.bookmarked_users.all():
         user.bookmarked_movies.add(movie)
     else:
@@ -227,10 +189,10 @@ def bookmarks(request, movie_pk):
     return JsonResponse(data=data)
 
 
-# 리뷰리스트 및 리뷰작성(특정 영화의)
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def review_list_or_create(request, movie_pk):
+    """리뷰 리스트 가져오기 및 (특정 영화의)리뷰 작성하기"""
 
     if request.method == 'GET':
         reviews = Review.objects.all()
@@ -240,20 +202,18 @@ def review_list_or_create(request, movie_pk):
 
     elif request.method =='POST':
         movie = get_object_or_404(Movie, pk=movie_pk)
-        # token 받기 전 
-        # user_pk = request.data['user'] # 5
-        # User = get_user_model()
-        # user = get_object_or_404(User, pk=user_pk) # test1
-
         user = request.user
         serializer = ReviewListSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(movie=movie, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def review_detail_or_update_or_delete(request, review_pk):
+    """특정 영화의 리뷰 자세히보기, 수정 및 삭제하기"""
+
     review = get_object_or_404(Review, pk=review_pk)
 
     if request.method == 'GET':
@@ -261,11 +221,6 @@ def review_detail_or_update_or_delete(request, review_pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
-        # token 받기 전 
-        # user_pk = request.data['user'] # 5
-        # User = get_user_model()
-        # user = get_object_or_404(User, pk=user_pk) # test1
-
         user = request.user
         serializer = ReviewSerializer(review, data=request.data)
         if serializer.is_valid(raise_exception=True):

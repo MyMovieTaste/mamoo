@@ -5,18 +5,22 @@ from django.conf import settings
 # Create your models here.
 
 class Year(models.Model):
+    """영화 개봉년도 클래스"""
     id = models.CharField(primary_key=True, max_length=4)
 
 class Bookmark(models.Model):
+    """북마크 클래스"""
     pass
 
 class Genre(models.Model):
+    """장르 클래스"""
     name = models.TextField()
 
     def __str__(self):
         return self.name
     
 class Movie(models.Model):
+    """영화 클래스"""
     title = CharField(max_length=100)
     overview = TextField()
     popularity = models.FloatField()
@@ -37,6 +41,7 @@ class Movie(models.Model):
 
     
 class Review(models.Model):
+    """리뷰 클래스"""
     content = models.TextField()
     rank = models.IntegerField(default=5)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -49,12 +54,3 @@ class Review(models.Model):
 
     def __str__(self):
         return self.movie_title
-
-# class Comment(models.Model):
-#     content = models.TextField()
-#     # 1:N
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     review = models.ForeignKey(Review, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return self.title

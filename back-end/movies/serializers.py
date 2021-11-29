@@ -3,16 +3,16 @@ from rest_framework import serializers
 from .models import Genre, Movie, Review, Year
 from django.contrib.auth import get_user_model
 
-# 리뷰 보기
 class ReviewListSerializer(serializers.ModelSerializer):
+    """개별 영화의 리뷰리스트 보기"""
     user = serializers.StringRelatedField()
     class Meta:
         model = Review
         fields = '__all__'
         read_only_fields = ('movie', 'user',)
 
-# 리뷰 상세        
 class ReviewSerializer(serializers.ModelSerializer):
+    """개별 영화의 개별 리뷰 상세보기"""
     user = serializers.StringRelatedField()
     
     class Meta:
@@ -20,28 +20,28 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('movie', 'user',)
 
-# 영화검색
 class MovieSearchSerializer(serializers.ModelSerializer):
+    """영화 검색"""
     class Meta:
         model = Movie
         fields = '__all__'
 
-# 영화 상세
 class MovieSerializer(serializers.ModelSerializer):
+    """영화 상세정보"""
     review_set = ReviewSerializer(many=True, read_only=True) # 영화에 달린 모든 댓글
     class Meta:
         model = Movie
         fields = '__all__'
 
-# 영화 리스트
 class MovieListSerializer(serializers.ModelSerializer):
+    """영화 리스트"""
     review_count = serializers.IntegerField(source='review_set.count', read_only=True) # 영화에 달린 모든 리뷰수
     class Meta:
         model = Movie
         fields = '__all__'
 
-# 장르별 개봉순 영화
 class RecentMovieByGenreListSerializer(serializers.ModelSerializer):
+    """장르별 개봉순 영화"""
     movies_by_genre = serializers.SerializerMethodField()
 
     class Meta:
@@ -55,8 +55,8 @@ class RecentMovieByGenreListSerializer(serializers.ModelSerializer):
         return MovieListSerializer(movies, many=True).data 
         # return movies.filter(genre_ids=obj.id).values() => M:N(bookmarked_user) 이 출력되지 않음.
 
-# 연도별 평균별점순 영화
 class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
+    """연도별 평균별점순 영화"""
     movies_by_year = serializers.SerializerMethodField()
 
     class Meta:
@@ -70,14 +70,8 @@ class BestVoteMovieByYearListSerializer(serializers.ModelSerializer):
         return MovieListSerializer(movies, many=True).data
         # return movies.filter(year_id=obj.id).values() => M:N(bookmarked_user) 이 출력되지 않음.
 
-# 장르 리스트
-class GenreListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Genre
-        fields = '__all__'
-
-# 영화추천
 class RecommendMovieSerializer(serializers.ModelSerializer):
+    """영화추천"""
     class Meta:
         model = Movie
         fields = '__all__'
