@@ -20,9 +20,6 @@ urlpatterns = [
     # 북마크
     path('<int:movie_pk>/bookmarks/', views.bookmarks),
 
-    # 장르 리스트
-    path('genre_list/', views.genre_list), 
-
     # 영화 추천
     path('movie_recommend/', views.movie_recommend), 
 
