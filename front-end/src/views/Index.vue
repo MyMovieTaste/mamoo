@@ -36,10 +36,10 @@
                 <div class="d-flex mt-3 justify-content-between">
                   <h1> {{ movieDetail.title }} </h1>
                   <div class="me-2">
-                    <a href="#"
+                    <a href="#a"
                       v-show="!isBookmarked"
                       @click="bookmark"><img src="../assets/Bookmark.svg" class="bookmark" alt=""></a>
-                    <a href="#"
+                    <a href="#a"
                       v-show="isBookmarked"
                       @click="bookmark"><img src="../assets/Bookmark_fill.svg" class="bookmark" alt=""></a>
                   </div>
@@ -157,8 +157,7 @@ export default {
         })
         // 로그인 안했을때
         // 역시 에러 구분하는거 어떻게 하는지 잘 모르겠다
-        .catch(err => {
-          console.log(err)
+        .catch(() => {
           alert('리뷰를 남기려면 로그인해주세요.')
         })
     },
@@ -166,6 +165,7 @@ export default {
       this.$store.dispatch('setToken')
     },
     bookmark() {
+      console.log(window.scrollY)
       if (this.isLogin) {
         this.$store.dispatch('bookmark', this.movieDetail.id)
       } else {
@@ -243,7 +243,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/scss/main.scss';
 
 .not-bookmarked {
