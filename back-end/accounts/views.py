@@ -34,7 +34,7 @@ def follow(request, user_pk):
     
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([AllowAny])  # 회원가입의 경우 로그인 전이기 때문에 permisson 허가
 def signup(request):
     """회원가입 기능"""
 	# 1-1. Client에서 온 데이터를 받아서
