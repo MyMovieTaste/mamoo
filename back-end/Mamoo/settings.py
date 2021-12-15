@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p7ctkux$^!l8ifrzdkgnz2e-5eip!+hm$+x@i1j#cu#$autubz'
+SECRET_KEY = config("SECRET_KEY") # # this is to replace the secret key you cut away before
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -155,5 +156,8 @@ REST_FRAMEWORK = {
 import datetime
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300), # 5분동안 유지
+
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
