@@ -36,7 +36,7 @@ def search(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) # 테스트 시에만 사용
+@permission_classes([AllowAny]) 
 def movie_list(request):
     """영화리스트 정보를 반환하는 함수"""
     movies = get_list_or_404(Movie)
@@ -128,7 +128,6 @@ def movie_recommend(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
 #특정 사용자가 4점이상 준 리뷰들의 장르별 비율을 구한다.
 def movie_mypick_genre_ratio(request):
     # token 받기 전 

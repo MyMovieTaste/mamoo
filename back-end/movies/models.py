@@ -6,7 +6,11 @@ from django.conf import settings
 
 class Year(models.Model):
     """영화 개봉년도 클래스"""
+    # 문자열 연도로 id라는 이름의 필드를 생성
+    # primary_key=True 로 설정하여 id 자동생성 방지
     id = models.CharField(primary_key=True, max_length=4)
+    year_int = models.IntegerField(null=True, blank=True)
+    
 
 class Bookmark(models.Model):
     """북마크 클래스"""
@@ -21,8 +25,8 @@ class Genre(models.Model):
     
 class Movie(models.Model):
     """영화 클래스"""
-    title = CharField(max_length=100)
-    overview = TextField()
+    title = models.CharField(max_length=100)
+    overview = models.TextField()
     popularity = models.FloatField()
     vote_count = models.IntegerField()
     vote_average = models.FloatField()
