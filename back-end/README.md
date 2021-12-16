@@ -2,7 +2,17 @@
 
 방의진
 
+12.16 변경사항
 
+- permission_class 수정
+
+12.15 변경사항
+
+- JWT SECRET KEY 설정
+
+- year 데이터 json 파일로 저장
+
+  
 
 ### 프로젝트 후기
 
