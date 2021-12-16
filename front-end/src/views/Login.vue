@@ -40,7 +40,7 @@ export default {
     login() {
       axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/accounts/api/token/',
+        url: 'http://127.0.0.1:8000/accounts/api-token-auth/',
         data: this.credentials,
       })
         .then(res => {
