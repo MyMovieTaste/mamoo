@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Movie, Genre, Review, Year
 from .serializers import MovieSearchSerializer, MovieListSerializer, MovieSerializer, ReviewListSerializer, BestVoteMovieByYearListSerializer, RecommendMovieSerializer, ReviewSerializer, RecentMovieByGenreListSerializer
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -10,18 +10,18 @@ from itertools import islice
 from django.contrib.auth import REDIRECT_FIELD_NAME, get_user_model
 from django.http.response import JsonResponse
 
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def create_year_table(request):
-    """연도테이블을 생성하는 함수"""
-    batch_size = 10
-    objs = (Year(id=year) for year in range(1950, 2022))
-    while True:
-        batch = list(islice(objs, batch_size))
-        if not batch:
-            break
-        Year.objects.bulk_create(batch, batch_size)
+#=> year.json 파일로 대체
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def create_year_table(request):
+#     """연도테이블을 생성하는 함수"""
+#     batch_size = 10
+#     objs = (Year(id=year) for year in range(1950, 2022))
+#     while True:
+#         batch = list(islice(objs, batch_size))
+#         if not batch:
+#             break
+#         Year.objects.bulk_create(batch, batch_size)
 
 
 @api_view(['GET'])
@@ -36,7 +36,7 @@ def search(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) # 테스트 시에만 사용
+@permission_classes([AllowAny]) 
 def movie_list(request):
     """영화리스트 정보를 반환하는 함수"""
     movies = get_list_or_404(Movie)
@@ -71,7 +71,7 @@ def get_details(request, movie_pk):
     return Response(serializers.data)
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def movie_recommend(request):
     """영화 추천"""
     user = request.user
@@ -126,52 +126,51 @@ def movie_recommend(request):
         serializers = RecommendMovieSerializer(recommend_movies_no_overlap, many=True)
         return Response(serializers.data)
 
+# => 장르비율: 미사용상태
+# @api_view(['GET'])
+# # 특정 사용자가 4점이상 준 리뷰들의 장르별 비율을 구한다.
+# def movie_mypick_genre_ratio(request):
+#     # token 받기 전 
+#     # user_pk = request.data['user'] # 5
+#     # User = get_user_model()
+#     # user = get_object_or_404(User, pk=user_pk) # test1
+#     # token 받은 후
+#     user = request.user
+#     user_reviews = Review.objects.all().filter(user=user)
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-#특정 사용자가 4점이상 준 리뷰들의 장르별 비율을 구한다.
-def movie_mypick_genre_ratio(request):
-    # token 받기 전 
-    # user_pk = request.data['user'] # 5
-    # User = get_user_model()
-    # user = get_object_or_404(User, pk=user_pk) # test1
-    # token 받은 후
-    user = request.user
-    user_reviews = Review.objects.all().filter(user=user)
+#     review_gte4 = user_reviews.filter(rank__gte=4)
+#     review_gte4_count = user_reviews.filter(rank__gte=4).count()
 
-    review_gte4 = user_reviews.filter(rank__gte=4)
-    review_gte4_count = user_reviews.filter(rank__gte=4).count()
+#     # 1. 4점 이상인 리뷰를 골라서 해당 영화 정보를 찾는다.
+#     if review_gte4_count >= 5:
+#         movie_list_gte4 = []
+#         for review in review_gte4:
+#             movie_id = getattr(review, 'movie_id') 
+#             if movie_id not in movie_list_gte4:
+#                 movie_list_gte4.append(movie_id)   
 
-    # 1. 4점 이상인 리뷰를 골라서 해당 영화 정보를 찾는다.
-    if review_gte4_count >= 5:
-        movie_list_gte4 = []
-        for review in review_gte4:
-            movie_id = getattr(review, 'movie_id') 
-            if movie_id not in movie_list_gte4:
-                movie_list_gte4.append(movie_id)   
-
-    # 2. 해당 영화들의 장르를 담는다. (중복포함)
-    genres_movie_list_gte4 = [] # [13, 24, 122, 335, 598, 1124, 4348, 489, 14]
-    for movie_id in movie_list_gte4:
-        movie = Movie.objects.filter(id=movie_id) 
-        genre_ids = movie.values('genre_ids') # [{'genre_ids': 18}, {'genre_ids': 35}, {'genre_ids': 10749}]>
+#     # 2. 해당 영화들의 장르를 담는다. (중복포함)
+#     genres_movie_list_gte4 = [] # [13, 24, 122, 335, 598, 1124, 4348, 489, 14]
+#     for movie_id in movie_list_gte4:
+#         movie = Movie.objects.filter(id=movie_id) 
+#         genre_ids = movie.values('genre_ids') # [{'genre_ids': 18}, {'genre_ids': 35}, {'genre_ids': 10749}]>
         
-        for genre_id in genre_ids:
-                genres_movie_list_gte4.append(genre_id['genre_ids'])
+#         for genre_id in genre_ids:
+#                 genres_movie_list_gte4.append(genre_id['genre_ids'])
 
-    # 3. 장르별 갯수를 구한다.  => 변경 | 장르별 비율만 front로 전달
-    genre_ratio_movie_list_gte4 = dict(Counter(genres_movie_list_gte4)) 
+#     # 3. 장르별 갯수를 구한다.  => 변경 | 장르별 비율만 front로 전달
+#     genre_ratio_movie_list_gte4 = dict(Counter(genres_movie_list_gte4)) 
 
-    total = sum(genre_ratio_movie_list_gte4.values())
+#     total = sum(genre_ratio_movie_list_gte4.values())
 
-    for genre_id, cnt in genre_ratio_movie_list_gte4.items():
-        genre_ratio_movie_list_gte4[genre_id] = round(cnt / total * 100, 1)
+#     for genre_id, cnt in genre_ratio_movie_list_gte4.items():
+#         genre_ratio_movie_list_gte4[genre_id] = round(cnt / total * 100, 1)
         
-    return Response(genre_ratio_movie_list_gte4)
+#     return Response(genre_ratio_movie_list_gte4)
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def bookmarks(request, movie_pk):
     """북마크 기능"""
     user = request.user
@@ -190,7 +189,7 @@ def bookmarks(request, movie_pk):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def review_list_or_create(request, movie_pk):
     """리뷰 리스트 가져오기 및 (특정 영화의)리뷰 작성하기"""
 
@@ -210,7 +209,7 @@ def review_list_or_create(request, movie_pk):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def review_detail_or_update_or_delete(request, review_pk):
     """특정 영화의 리뷰 자세히보기, 수정 및 삭제하기"""
 

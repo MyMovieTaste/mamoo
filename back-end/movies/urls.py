@@ -23,13 +23,13 @@ urlpatterns = [
     # 영화 추천
     path('movie_recommend/', views.movie_recommend), 
 
-    # 내가 4점이상 리뷰 준 영화의 장르비율
-    path('movie_mypick_genre_ratio/', views.movie_mypick_genre_ratio), 
+    # 내가 4점이상 리뷰 준 영화의 장르비율 => 미사용
+    # path('movie_mypick_genre_ratio/', views.movie_mypick_genre_ratio), 
     
     # 리뷰: 보기 쓰기 업데이트 삭제
     path('<int:movie_pk>/reviews/', views.review_list_or_create), # get, post
     path('reviews/<int:review_pk>/', views.review_detail_or_update_or_delete), # get, put, delete
 
-    # 연도테이블 생성
-    path('create_year_table/', views.create_year_table), 
+    # 연도테이블 생성 => 미사용
+    # path('create_year_table/', views.create_year_table), 
   ]

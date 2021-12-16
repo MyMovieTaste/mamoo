@@ -15,12 +15,14 @@
       class="btn btn-outline mt-3"
       v-if="isSelfAndIsFollowing === 'isFollowing'"
       @click="follow">언팔로우</button>
-    <p>bookmarked:</p>
-    <bookmarked-item
-      v-for="movie in personInfo.bookmarked_movies"
-      :key="movie.id"
-      :movie="movie"
-    ></bookmarked-item>
+    <h3 class="mt-5 mb-5">북마크한 영화</h3>
+    <div class="d-flex">
+      <bookmarked-item
+        v-for="movie in personInfo.bookmarked_movies"
+        :key="movie.id"
+        :movie="movie"
+      ></bookmarked-item>
+    </div>
   </div>
 </div>
 </template>

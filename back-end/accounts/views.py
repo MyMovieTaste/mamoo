@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from .serializers import UserSerializer, ProfileSerializer
 from django.contrib.auth import get_user_model
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def profile(request, username):
     """프로필 페이지 기능"""
     User = get_user_model()
@@ -17,7 +17,7 @@ def profile(request, username):
     return Response(serializer.data)
 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def follow(request, user_pk):
     """팔로우 기능"""
     User = get_user_model()
@@ -34,7 +34,7 @@ def follow(request, user_pk):
     
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([AllowAny])  # 회원가입의 경우 로그인 전이기 때문에 permisson 허가
 def signup(request):
     """회원가입 기능"""
 	# 1-1. Client에서 온 데이터를 받아서

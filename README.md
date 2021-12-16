@@ -54,12 +54,16 @@ $ source venv/bin/activate
 ```
 
 ```bash
-# 1. 연도테이블 생성
-# 'GET'방식으로 다음 주소를 요청해주세요.
-http://127.0.0.1:8000/movies/create_year_table/
+# 1-> 2-> 3 순서로 진행
 
-# 2. 장르 데이터 받아오기
+# 1. 장르 데이터 받아오기
 $ python manage.py loaddata genres.json
+
+# 2. 연도테이블 생성
+# 'GET'방식으로 다음 주소를 요청해주세요 http://127.0.0.1:8000/movies/create_year_table/
+# -> json 파일로 변경
+
+$ python manage.py loaddata year.json
 
 # 3. 영화 데이터 받아오기
 $ python manage.py loaddata top_rated.json
