@@ -36,9 +36,8 @@ def get_secret(setting, secrets=secrets):
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
 
-# SECRET_KEY = 'django-insecure-p7ctkux$^!l8ifrzdkgnz2e-5eip!+hm$+x@i1j#cu#$autubz'
-SECRET_KEY = get_secret("SECRET_KEY")
 
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

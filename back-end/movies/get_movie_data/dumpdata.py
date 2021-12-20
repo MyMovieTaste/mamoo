@@ -5,12 +5,29 @@
 
 import json
 from pprint import pprint
-# pip install requests
 import requests
 from tmdb import TMDBHelper
+from pathlib import Path
 
-tmdb_helper = TMDBHelper('a7a15875c1c12251bc2930bc181baca0')
+# 시크릿키
+import os, json
+from django.core.exceptions import ImproperlyConfigured
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+secret_file = os.path.join(BASE_DIR, 'api_key.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+tmdb_helper = TMDBHelper(get_secret("API_KEY"))
 
 def get_top_rated():
   result = []
@@ -42,3 +59,20 @@ def get_top_rated():
 
 with open('../fixtures/top_rated.json', 'w', encoding="UTF-8") as f:
   json.dump(get_top_rated(), f, ensure_ascii=False, indent=2)
+
+
+def get_year():
+  result = []
+  for year in range(1950, 2022):
+    year_dict = {
+        "model" : "movies.year",
+        "pk" : year,
+        "fields" : {
+            "year_str" : str(year),
+        }
+    }
+    result.append(year_dict)
+  return result    
+
+with open('../fixtures/year.json', 'w', encoding="UTF-8") as f:
+  json.dump(get_year(), f, ensure_ascii=False, indent=2)
