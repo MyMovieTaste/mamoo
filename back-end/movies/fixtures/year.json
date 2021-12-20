@@ -1,506 +1,506 @@
 [
   {
     "model": "movies.year",
-    "pk": "1950",
+    "pk": 1950,
     "fields": {
-      "year_int": 1950
+      "year_str": "1950"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1951",
+    "pk": 1951,
     "fields": {
-      "year_int": 1951
+      "year_str": "1951"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1952",
+    "pk": 1952,
     "fields": {
-      "year_int": 1952
+      "year_str": "1952"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1953",
+    "pk": 1953,
     "fields": {
-      "year_int": 1953
+      "year_str": "1953"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1954",
+    "pk": 1954,
     "fields": {
-      "year_int": 1954
+      "year_str": "1954"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1955",
+    "pk": 1955,
     "fields": {
-      "year_int": 1955
+      "year_str": "1955"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1956",
+    "pk": 1956,
     "fields": {
-      "year_int": 1956
+      "year_str": "1956"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1957",
+    "pk": 1957,
     "fields": {
-      "year_int": 1957
+      "year_str": "1957"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1958",
+    "pk": 1958,
     "fields": {
-      "year_int": 1958
+      "year_str": "1958"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1959",
+    "pk": 1959,
     "fields": {
-      "year_int": 1959
+      "year_str": "1959"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1960",
+    "pk": 1960,
     "fields": {
-      "year_int": 1960
+      "year_str": "1960"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1961",
+    "pk": 1961,
     "fields": {
-      "year_int": 1961
+      "year_str": "1961"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1962",
+    "pk": 1962,
     "fields": {
-      "year_int": 1962
+      "year_str": "1962"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1963",
+    "pk": 1963,
     "fields": {
-      "year_int": 1963
+      "year_str": "1963"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1964",
+    "pk": 1964,
     "fields": {
-      "year_int": 1964
+      "year_str": "1964"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1965",
+    "pk": 1965,
     "fields": {
-      "year_int": 1965
+      "year_str": "1965"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1966",
+    "pk": 1966,
     "fields": {
-      "year_int": 1966
+      "year_str": "1966"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1967",
+    "pk": 1967,
     "fields": {
-      "year_int": 1967
+      "year_str": "1967"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1968",
+    "pk": 1968,
     "fields": {
-      "year_int": 1968
+      "year_str": "1968"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1969",
+    "pk": 1969,
     "fields": {
-      "year_int": 1969
+      "year_str": "1969"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1970",
+    "pk": 1970,
     "fields": {
-      "year_int": 1970
+      "year_str": "1970"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1971",
+    "pk": 1971,
     "fields": {
-      "year_int": 1971
+      "year_str": "1971"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1972",
+    "pk": 1972,
     "fields": {
-      "year_int": 1972
+      "year_str": "1972"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1973",
+    "pk": 1973,
     "fields": {
-      "year_int": 1973
+      "year_str": "1973"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1974",
+    "pk": 1974,
     "fields": {
-      "year_int": 1974
+      "year_str": "1974"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1975",
+    "pk": 1975,
     "fields": {
-      "year_int": 1975
+      "year_str": "1975"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1976",
+    "pk": 1976,
     "fields": {
-      "year_int": 1976
+      "year_str": "1976"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1977",
+    "pk": 1977,
     "fields": {
-      "year_int": 1977
+      "year_str": "1977"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1978",
+    "pk": 1978,
     "fields": {
-      "year_int": 1978
+      "year_str": "1978"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1979",
+    "pk": 1979,
     "fields": {
-      "year_int": 1979
+      "year_str": "1979"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1980",
+    "pk": 1980,
     "fields": {
-      "year_int": 1980
+      "year_str": "1980"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1981",
+    "pk": 1981,
     "fields": {
-      "year_int": 1981
+      "year_str": "1981"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1982",
+    "pk": 1982,
     "fields": {
-      "year_int": 1982
+      "year_str": "1982"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1983",
+    "pk": 1983,
     "fields": {
-      "year_int": 1983
+      "year_str": "1983"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1984",
+    "pk": 1984,
     "fields": {
-      "year_int": 1984
+      "year_str": "1984"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1985",
+    "pk": 1985,
     "fields": {
-      "year_int": 1985
+      "year_str": "1985"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1986",
+    "pk": 1986,
     "fields": {
-      "year_int": 1986
+      "year_str": "1986"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1987",
+    "pk": 1987,
     "fields": {
-      "year_int": 1987
+      "year_str": "1987"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1988",
+    "pk": 1988,
     "fields": {
-      "year_int": 1988
+      "year_str": "1988"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1989",
+    "pk": 1989,
     "fields": {
-      "year_int": 1989
+      "year_str": "1989"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1990",
+    "pk": 1990,
     "fields": {
-      "year_int": 1990
+      "year_str": "1990"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1991",
+    "pk": 1991,
     "fields": {
-      "year_int": 1991
+      "year_str": "1991"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1992",
+    "pk": 1992,
     "fields": {
-      "year_int": 1992
+      "year_str": "1992"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1993",
+    "pk": 1993,
     "fields": {
-      "year_int": 1993
+      "year_str": "1993"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1994",
+    "pk": 1994,
     "fields": {
-      "year_int": 1994
+      "year_str": "1994"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1995",
+    "pk": 1995,
     "fields": {
-      "year_int": 1995
+      "year_str": "1995"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1996",
+    "pk": 1996,
     "fields": {
-      "year_int": 1996
+      "year_str": "1996"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1997",
+    "pk": 1997,
     "fields": {
-      "year_int": 1997
+      "year_str": "1997"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1998",
+    "pk": 1998,
     "fields": {
-      "year_int": 1998
+      "year_str": "1998"
     }
   },
   {
     "model": "movies.year",
-    "pk": "1999",
+    "pk": 1999,
     "fields": {
-      "year_int": 1999
+      "year_str": "1999"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2000",
+    "pk": 2000,
     "fields": {
-      "year_int": 2000
+      "year_str": "2000"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2001",
+    "pk": 2001,
     "fields": {
-      "year_int": 2001
+      "year_str": "2001"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2002",
+    "pk": 2002,
     "fields": {
-      "year_int": 2002
+      "year_str": "2002"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2003",
+    "pk": 2003,
     "fields": {
-      "year_int": 2003
+      "year_str": "2003"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2004",
+    "pk": 2004,
     "fields": {
-      "year_int": 2004
+      "year_str": "2004"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2005",
+    "pk": 2005,
     "fields": {
-      "year_int": 2005
+      "year_str": "2005"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2006",
+    "pk": 2006,
     "fields": {
-      "year_int": 2006
+      "year_str": "2006"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2007",
+    "pk": 2007,
     "fields": {
-      "year_int": 2007
+      "year_str": "2007"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2008",
+    "pk": 2008,
     "fields": {
-      "year_int": 2008
+      "year_str": "2008"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2009",
+    "pk": 2009,
     "fields": {
-      "year_int": 2009
+      "year_str": "2009"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2010",
+    "pk": 2010,
     "fields": {
-      "year_int": 2010
+      "year_str": "2010"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2011",
+    "pk": 2011,
     "fields": {
-      "year_int": 2011
+      "year_str": "2011"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2012",
+    "pk": 2012,
     "fields": {
-      "year_int": 2012
+      "year_str": "2012"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2013",
+    "pk": 2013,
     "fields": {
-      "year_int": 2013
+      "year_str": "2013"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2014",
+    "pk": 2014,
     "fields": {
-      "year_int": 2014
+      "year_str": "2014"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2015",
+    "pk": 2015,
     "fields": {
-      "year_int": 2015
+      "year_str": "2015"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2016",
+    "pk": 2016,
     "fields": {
-      "year_int": 2016
+      "year_str": "2016"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2017",
+    "pk": 2017,
     "fields": {
-      "year_int": 2017
+      "year_str": "2017"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2018",
+    "pk": 2018,
     "fields": {
-      "year_int": 2018
+      "year_str": "2018"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2019",
+    "pk": 2019,
     "fields": {
-      "year_int": 2019
+      "year_str": "2019"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2020",
+    "pk": 2020,
     "fields": {
-      "year_int": 2020
+      "year_str": "2020"
     }
   },
   {
     "model": "movies.year",
-    "pk": "2021",
+    "pk": 2021,
     "fields": {
-      "year_int": 2021
+      "year_str": "2021"
     }
   }
 ]

@@ -605,5 +605,6 @@ $RECYCLE.BIN/
 
 # Custom settings
 secrets.json
+api_key.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,macos,windows,visualstudiocode,django,venv

@@ -8,7 +8,7 @@ from .serializers import UserSerializer, ProfileSerializer
 from django.contrib.auth import get_user_model
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([AllowAny])
 def profile(request, username):
     """프로필 페이지 기능"""
     User = get_user_model()

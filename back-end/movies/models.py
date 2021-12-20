@@ -6,7 +6,7 @@ from django.conf import settings
 
 class Year(models.Model):
     """영화 개봉년도 클래스"""
-    id = models.CharField(primary_key=True, max_length=4)
+    year_str = models.CharField(max_length=4, null=True)
     
 
 class Bookmark(models.Model):

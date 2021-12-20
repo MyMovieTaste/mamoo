@@ -1,0 +1,29 @@
+Internal Server Error: /accounts/api-token-auth/
+Traceback (most recent call last):
+  File "/back-end/venv/lib/python3.9/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/back-end/venv/lib/python3.9/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/back-end/venv/lib/python3.9/site-packages/django/views/decorators/csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/back-end/venv/lib/python3.9/site-packages/django/views/generic/base.py", line 70, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework_jwt/views.py", line 57, in post
+    if serializer.is_valid():
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/serializers.py", line 220, in is_valid
+    self._validated_data = self.run_validation(self.initial_data)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework/serializers.py", line 422, in run_validation
+    value = self.validate(value)
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework_jwt/serializers.py", line 60, in validate
+    'token': jwt_encode_handler(payload),
+  File "/back-end/venv/lib/python3.9/site-packages/rest_framework_jwt/utils.py", line 92, in jwt_encode_handler
+    return jwt.encode(
+AttributeError: 'str' object has no attribute 'decode'
