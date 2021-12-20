@@ -173,12 +173,12 @@ export default {
 .modal {
   color: $gray-100;
 }
-.modal-content {
-  color: $gray-100;
-}
-.modal-body {
- color: $gray-100;
-}
+// .modal-content {
+//   color: $gray-100;
+// }
+// .modal-body {
+//  color: $gray-100;
+// }
 
 .modal-header{
   border-bottom: none;

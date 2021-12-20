@@ -21,6 +21,7 @@
         <div v-else class="nav-item">
           <!-- 이렇게 하면 왜 계속 장고서버가 반응하는데 computed가 발생하는건가 왜지 -->
           <!-- <router-link :to="`/profile/${userInfo.username}`" class="btn btn-primary me-2">내 프로필</router-link> -->
+          <!-- 내 프로필에서 내 프로필 누르면 에러가 나는데 중요한건 아니지만 없애려면 if로 하면 되려나 -->
           <a href="#" @click="toMyProfile" class="btn btn-primary me-2">내 프로필</a>
           <router-link to="#" @click.native="logout" class="btn btn-outline">로그아웃</router-link>
         </div>

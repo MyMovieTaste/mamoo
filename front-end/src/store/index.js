@@ -69,6 +69,7 @@ export default new Vuex.Store({
     },
     GETMOVIEDETAIL(state, movie) {
       state.movieDetail = movie
+      console.log(movie)
     },
     REVIEWINPUTCHANGE(state, value) {
       state.reviewInput = value
