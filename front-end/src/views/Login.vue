@@ -27,11 +27,12 @@
 import axios from 'axios'
 
 export default {
-  name: 'Index',
+  name: 'Login',
   data: function() {
     return {
       credentials: {
-
+        username: null,
+        password: null,
       }
     }
   },
@@ -44,6 +45,7 @@ export default {
         data: this.credentials,
       })
         .then(res => {
+          // console.log(res)
           sessionStorage.setItem('jwt', res.data.token)
           this.$store.dispatch('login')
           this.$router.push({ name: 'Index' })
