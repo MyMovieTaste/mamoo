@@ -47,14 +47,16 @@ $ npm run serve
 ```bash
 # 경로이동
 $ cd backend/
-# pip 인스톨
-$ pip install -r requirements.txt
 # 가상환경 실행
 $ source venv/bin/activate
+# pip 인스톨
+$ pip install -r requirements.txt
+# model migration(database schema setting)
+$ python manage.py makemigrations
 ```
 
 ```bash
-# 1-> 2-> 3 순서로 진행
+# 데이터 저장 1-> 2-> 3 순서로 진행
 
 # 1. 장르 데이터 받아오기
 $ python manage.py loaddata genres.json
@@ -67,6 +69,9 @@ $ python manage.py loaddata year.json
 
 # 3. 영화 데이터 받아오기
 $ python manage.py loaddata top_rated.json
+
+# migrate(db 변화 내용을 실제 테이블에 적용)
+$ python manage.py migrate
 ```
 
 ```bash
