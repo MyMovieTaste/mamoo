@@ -23,6 +23,16 @@ from django.http.response import JsonResponse
 #             break
 #         Year.objects.bulk_create(batch, batch_size)
 
+# 지우고싶은 특정 테이블(Review) 삭제
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def delete_table(request):
+    Review.objects.all().delete()
+    context= {}
+    return context
+
+
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -119,7 +129,9 @@ def movie_recommend(request):
                     recommend_movies.append(r['movie'])
 
         recommend_movies_no_overlap_ids = list(set(recommend_movies)) # 중복제거 # [121, 278, 857, 76, 70]
-        recommend_movies_no_overlap = Movie.objects.filter(id__in=recommend_movies_no_overlap_ids) # Movie QuerySet
+
+        # 최대 12개 출력
+        recommend_movies_no_overlap = Movie.objects.filter(id__in=recommend_movies_no_overlap_ids)[:12] # Movie QuerySet
 
         # 4. 만약 추천 갯수가 5개 미만이면, 인기도 순(popularity), 최신순으로 5개를 더 출력한다. (front)
 
@@ -220,10 +232,15 @@ def review_detail_or_update_or_delete(request, review_pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
+        # 본인 게시글만 수정가능
+        # if not request.user.review_set.filter(pk=review_pk).exists():
+        #     return Response({'detail' : '권한이 없습니다.'}, status=HTTP_403_FORBIDDON)
+
         user = request.user
         serializer = ReviewSerializer(review, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user)
+            
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
     elif request.method == 'DELETE':

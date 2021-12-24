@@ -158,6 +158,8 @@ export default {
         // 로그인 안했을때
         // 역시 에러 구분하는거 어떻게 하는지 잘 모르겠다
         .catch(() => {
+          console.log(review)
+          console.log(this.$store.state.token)
           alert('리뷰를 남기려면 로그인해주세요.')
         })
     },
@@ -165,7 +167,7 @@ export default {
       this.$store.dispatch('setToken')
     },
     bookmark() {
-      console.log(window.scrollY)
+      // console.log(window.scrollY)
       if (this.isLogin) {
         this.$store.dispatch('bookmark', this.movieDetail.id)
       } else {

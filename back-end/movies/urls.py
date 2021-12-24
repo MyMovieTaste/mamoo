@@ -32,4 +32,7 @@ urlpatterns = [
 
     # 연도테이블 생성 => 미사용
     # path('create_year_table/', views.create_year_table), 
+
+    # 특정 테이블 삭제(리뷰)
+    path('delete_table/', views.delete_table), 
   ]

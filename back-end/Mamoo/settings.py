@@ -161,6 +161,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
+# 권한 및 인증
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -173,7 +174,8 @@ REST_FRAMEWORK = {
 import datetime
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
     # 'JWT_ALLOW_REFRESH': True,
     # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
